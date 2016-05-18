@@ -74,7 +74,7 @@
 
 #display {
     width: 1812px;
-    top: 8%;
+    top: 9%;
     left: 1%;
     position: absolute;
     font-size: .7vw;
@@ -138,11 +138,12 @@
 }
 
 #saveButton {
-    top: 0px;
+    top: -1px;
     height: 4vh;
     width: 4vw;
     position: absolute;
-    left: 50%;
+    left: 42%;
+    right: 1009px;
 }
 
 #submitButton {

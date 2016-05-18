@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.Mail;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class Page2 : System.Web.UI.Page
 {
-    public string pcName = "'sallya'";
+    public string pcName = "'clairet'";
 
     string sqlConnString = @"Data Source=Dev-Intranet;Initial Catalog=DevData;User ID=IntranetUser;Password=IntranetUser";
     private object ClientName;
@@ -142,51 +143,85 @@ public partial class Page2 : System.Web.UI.Page
 
     protected void saveButton_Click(object sender, EventArgs e)
     {
-        string query = "";
-
-        for (int i = 0; i < infoGridView.Rows.Count; i++)
+        try
         {
+            string query = "";
 
-            GridViewRow row = infoGridView.Rows[i];
-
-
-
-            DropDownList clientId = ((DropDownList)(row.Cells[6].FindControl("ddlClientNameText")));
-            string clientIdDdl = clientId.SelectedValue.ToString();
-
-
-
-            DropDownList categoryId = ((DropDownList)(row.Cells[7].FindControl("ddlCategoryDescriptionText")));
-            string categoryIdDdl = categoryId.SelectedValue.ToString();
-
-            TextBox billableText = (TextBox)row.Cells[8].FindControl("tbxBillable");
-            string billableTextTbx = billableText.Text;
-
-            HiddenField hiddenId = (HiddenField)row.Cells[6].FindControl("HiddenId");
-            string hiddenIdText = hiddenId.Value;
-
-            TextBox description2Text = (TextBox)row.Cells[4].FindControl("description2Text");
-            string description2 = description2Text.Text;
-
-
-            using (SqlConnection connection = new SqlConnection(sqlConnString))
+            for (int i = 0; i < infoGridView.Rows.Count; i++)
             {
 
-                string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdDdl + "', [CategoryId] = '" + categoryIdDdl + "',   [Billable]= '" + billableTextTbx + "', [Status] = '2'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
+                GridViewRow row = infoGridView.Rows[i];
 
-                connection.Open();
-                SqlCommand myCommand = new SqlCommand();
-                myCommand.Connection = connection;
-                myCommand.CommandText = queryUpdate;
-                myCommand.CommandTimeout = 60;
-                myCommand.ExecuteNonQuery();
+
+
+                DropDownList clientId = ((DropDownList)(row.Cells[6].FindControl("ddlClientNameText")));
+                string clientIdDdl = clientId.SelectedValue.ToString();
+
+
+
+                DropDownList categoryId = ((DropDownList)(row.Cells[7].FindControl("ddlCategoryDescriptionText")));
+                string categoryIdDdl = categoryId.SelectedValue.ToString();
+
+                TextBox billableText = (TextBox)row.Cells[8].FindControl("tbxBillable");
+                string billableTextTbx = billableText.Text;
+
+                HiddenField hiddenId = (HiddenField)row.Cells[6].FindControl("HiddenId");
+                string hiddenIdText = hiddenId.Value;
+
+                TextBox description2Text = (TextBox)row.Cells[4].FindControl("description2Text");
+                string description2 = description2Text.Text;
+
+
+                using (SqlConnection connection = new SqlConnection(sqlConnString))
+                {
+
+                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdDdl + "', [CategoryId] = '" + categoryIdDdl + "',   [Billable]= '" + billableTextTbx + "', [Status] = '2'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
+
+                    connection.Open();
+                    SqlCommand myCommand = new SqlCommand();
+                    myCommand.Connection = connection;
+                    myCommand.CommandText = queryUpdate;
+                    myCommand.CommandTimeout = 60;
+                    myCommand.ExecuteNonQuery();
+                }
+                doneMessage.Text = "Save complete.";
+
+
             }
+        }
+        catch (Exception ex)
+        {
+
+
+            SendErrorEmail(ex.ToString(), "AMEX - saveButton_Click", pcName);
+
+
+            doneMessage.Text = "Entries not saved!";
+        }
+    }
+    public static void SendErrorEmail(string bodyText, string emailSubject, string userId)
+    {
+
+        string to = "mgeppert@ssgstl.com";
+        string from = "emailnoreply@summitstrategies.com";
+        try
+        {
+            MailMessage message = new MailMessage(from, to);
+
+            message.Subject = "Error in 'AMEX = " + emailSubject;
+            message.Body = "<strong>User:</strong><br />" + userId + "<br /><br />" + bodyText;
+            message.IsBodyHtml = true;
+            SmtpClient client = new SmtpClient();
+            client.Send(message);
 
         }
-
+        catch (Exception ex)
+        {
+            throw ex;
+        }
     }
-}
 
+}
 
 
 

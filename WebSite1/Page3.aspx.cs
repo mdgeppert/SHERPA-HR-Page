@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
+using System.Net.Mail;
+using System.Text;
 using System.Web.UI.WebControls;
 
 
@@ -54,6 +57,7 @@ public partial class Page3 : System.Web.UI.Page
             myCommand.CommandTimeout = 60;
             infoGridView.DataSource = myCommand.ExecuteReader();
             infoGridView.DataBind();
+            connection.Close();
         }
     }
 
@@ -91,64 +95,144 @@ public partial class Page3 : System.Web.UI.Page
 
 
 
-    //public void ddlClientNameTbx(object sender, GridViewRowEventArgs e)
+
+    protected void finalUpdateInfo(object sender, EventArgs e)
+    {
+        string pcName = "";
+        //pcName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+        pcName = pcName.Substring(pcName.IndexOf(@"\") + 1).ToLower();
+        try
+        {
+            string query = "";
+
+            for (int i = 0; i < infoGridView.Rows.Count; i++)
+            {
+
+                GridViewRow row = infoGridView.Rows[i];
+
+
+
+                TextBox clientId = ((TextBox)(row.Cells[6].FindControl("ClientNameTbx")));
+                string clientIdTbx = clientId.Text.ToString();
+
+
+
+                TextBox categoryId = ((TextBox)(row.Cells[7].FindControl("CategoryDescriptionTbx")));
+                string CategoryDescriptionTbx = categoryId.Text.ToString();
+
+                TextBox billableText = (TextBox)row.Cells[8].FindControl("tbxBillable");
+                string billableTextTbx = billableText.Text;
+
+                HiddenField hiddenId = (HiddenField)row.Cells[6].FindControl("HiddenId");
+                string hiddenIdText = hiddenId.Value;
+
+                TextBox description2Text = (TextBox)row.Cells[4].FindControl("description2Text");
+                string description2 = description2Text.Text;
+
+
+                using (SqlConnection connection = new SqlConnection(sqlConnString))
+                {
+
+                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdTbx + "', [CategoryId] = '" + CategoryDescriptionTbx + "',   [Billable]= '" + billableTextTbx + "', [Status] = '3'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
+
+                    connection.Open();
+                    SqlCommand myCommand = new SqlCommand();
+                    myCommand.Connection = connection;
+                    myCommand.CommandText = queryUpdate;
+                    myCommand.CommandTimeout = 60;
+                    myCommand.ExecuteNonQuery();
+                }
+                doneMessage2.Text = "Confirmation complete.";
+
+
+            }
+        }
+        catch (Exception ex)
+        {
+
+
+            SendErrorEmail(ex.ToString(), "AMEX - saveButton_Click", pcName);
+
+
+            doneMessage2.Text = "Entries not saved!";
+        }
+    }
+    public static void SendErrorEmail(string bodyText, string emailSubject, string pcName)
+    {
+
+        string to = "mgeppert@ssgstl.com";
+        string from = "emailnoreply@summitstrategies.com";
+        try
+        {
+            MailMessage message = new MailMessage(from, to);
+
+            message.Subject = "Error in 'AMEX = " + emailSubject;
+            message.Body = "<strong>User:</strong><br />" + pcName + "<br /><br />" + bodyText;
+            message.IsBodyHtml = true;
+            SmtpClient client = new SmtpClient();
+            client.Send(message);
+
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
+
+
+protected void createCsv(object sender, EventArgs e)
+{
+    StringBuilder sb = new StringBuilder();
+    //try
     //{
+    using (SqlConnection connection = new SqlConnection(sqlConnString))
+    {
+        string sqlQuery = @"SELECT   
+[Id],
+[UserId],   
+[CloseDate], 
+[ChargeDate], 
+[Description], 
+[Description2],
+[Amount], 
+[ClientId],
+[CategoryId],
+[Billable]
+FROM [DevData].[Expense].[Transactions]
+WHERE [Status] = 3";
+        connection.Open();
+        SqlCommand myCommand = new SqlCommand();
+        myCommand.Connection = connection;
+        myCommand.CommandText = sqlQuery;
+        myCommand.CommandType = CommandType.Text;
+        myCommand.CommandTimeout = 60;
+        SqlDataReader reader = myCommand.ExecuteReader();
+        if (reader.HasRows)
+        {
+            while (reader.Read())
+            {
+                sb.Append(reader["UserId"].ToString() + ",");
+                sb.Append(reader["CloseDate"].ToString() + ",");
+                sb.Append(reader["ChargeDate"].ToString() + ",");
+                sb.Append(reader["Description"].ToString() + ",");
+                sb.Append(reader["Description2"].ToString() + ",");
+                sb.Append(reader["Amount"].ToString() + ",");
+                sb.Append(reader["ClientId"].ToString() + ",");
+                sb.Append(reader["CategoryId"].ToString() + ",");
+                sb.Append(reader["Billable"].ToString() + ",");
+                sb.Append("\r\n");
+            }
+            Response.Output.Write(sb.ToString());
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition",
+             "attachment;filename=amexExpenseData" + DateTime.Now + ".csv");
+            Response.End();
+            Response.Flush();
+            Response.Charset = "";
+            Response.ContentType = "application/text";
+        }
 
-
-    //    if (e.Row.RowType == DataControlRowType.DataRow)
-    //    {
-    //        DropDownList ddlClientName = (e.Row.FindControl("ddlClientNameText") as DropDownList);
-
-
-
-
-    //        using (SqlConnection connection = new SqlConnection(sqlConnString))
-    //        {
-    //            string sqlQuery1 = @"SELECT [ClientName], [ClientId]  FROM [Expense].[Clients]";
-    //            connection.Open();
-    //            SqlCommand myCommand = new SqlCommand();
-    //            myCommand.Connection = connection;
-    //            myCommand.CommandText = sqlQuery1;
-    //            myCommand.CommandType = CommandType.Text;
-    //            myCommand.CommandTimeout = 60;
-    //            SqlDataReader myReader = myCommand.ExecuteReader();
-    //            ddlClientName.DataSource = myReader;
-    //            ddlClientName.DataTextField = "ClientName";
-    //            ddlClientName.DataValueField = "ClientId";
-    //            ddlClientName.DataBind();
-    //            myReader.Close();
-    //            ddlClientName.Items.Insert(0, new ListItem("Please select"));
-
-    //            DropDownList ddlCategoryDescription = (e.Row.FindControl("ddlCategoryDescriptionText") as DropDownList);
-
-    //            string sqlQuery2 = @"SELECT [CategoryDescription], [CategoryId] FROM [Expense].[Category]";
-    //            myCommand = new SqlCommand();
-    //            myCommand.Connection = connection;
-    //            myCommand.CommandText = sqlQuery2;
-    //            myCommand.CommandType = CommandType.Text;
-    //            myCommand.CommandTimeout = 60;
-    //            myReader = myCommand.ExecuteReader();
-    //            ddlCategoryDescription.DataSource = myReader;
-
-    //            ddlCategoryDescription.DataTextField = "CategoryDescription";
-    //            ddlCategoryDescription.DataValueField = "CategoryId";
-    //            ddlCategoryDescription.DataBind();
-
-    //            ddlCategoryDescription.Items.Insert(0, new ListItem("Please select"));
-    //            }
-    //        }
-    //    }
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
