@@ -19,13 +19,11 @@
             <div class="row">
                 <form id="display" runat="server">
                     <asp:Button ID="saveButton1" runat="server" Text="Save" OnClick="saveButton_Click" AutoPostBack="true" Height="26px" style="margin-left: 720px" Width="64px" />
-                    <asp:Button ID="startButton" runat="server" Text="Start" OnClick="resume_Click" AutoPostBack="true" Height="26px" style="margin-left: 680px" Width="64px"/>
                     <asp:Button ID="submitButton1" runat="server" OnClick="submitButton_Click" Text="Submit" AutoPostBack="true" Height="26px" Width="64px" />
                     <asp:Label ID="doneMessage"  runat="server"  />
                     <asp:GridView ID="infoGridView" runat="server" Height="50px" AutoGenerateColumns="False" OnRowDataBound="ddlClientNameTbx" BackColor="White" BorderColor="#CCCCCC" Style="margin-left: 3px; margin-top: 85px; margin-bottom: 0px;" Width="97%" BorderStyle="None" CellPadding="10" BorderWidth="1px" GridLines="None">
                         <AlternatingRowStyle BackColor="#CCD9FF" />
                         <Columns>
-
                             <asp:BoundField DataField="EmployeeName" HeaderText="Employee Name" ReadOnly="True"><%--Employee Name--%>
                                 <ControlStyle Font-Names="Arial" Font-Bold />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" CssClass="margin-left: 0;" HorizontalAlign="Left" />
@@ -57,7 +55,7 @@
 
                             <asp:TemplateField HeaderText="Client Name"><%--ClientName--%>
                                 <ItemTemplate>
-                                    <asp:DropDownList ID="ddlClientNameText" runat="server" OnSelectedIndexChanged="clientIdText" AutoPostBack="true"></asp:DropDownList>
+                                    <asp:DropDownList ID="ddlClientNameText" runat="server" OnSelectedIndexChanged="billableText" AutoPostBack="true"></asp:DropDownList>
                                     <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="ddlClientNameText" ErrorMessage="*" ForeColor="Red" InitialValue="Please select" Font-Size="XX-Large"></asp:RequiredFieldValidator>--%>
                                 </ItemTemplate>
                                 <ControlStyle Font-Bold="True" Font-Names="Arial" />
@@ -77,7 +75,7 @@
 
                             <asp:TemplateField HeaderText="Billable"><%--Billable--%>
                                 <ItemTemplate>
-                                    <asp:TextBox runat="server" ID="tbxBillable" OnSelectedIndexChanged="clientIdText" AutoPostBack="true" />
+                                    <asp:TextBox runat="server" ID="tbxBillable" AutoPostBack="true" Text='<%# Bind("Billable") %>' />
                                     <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" ControlToValidate="tbxBillable" ErrorMessage="*" OnClick="saveButton_Click" ForeColor="Red" Font-Size="XX-Large"></asp:RequiredFieldValidator>--%>
                                 </ItemTemplate>
                                 <ControlStyle Font-Bold="True" Font-Names="Arial" />

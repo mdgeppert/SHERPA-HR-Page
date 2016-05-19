@@ -133,7 +133,7 @@ public partial class Page3 : System.Web.UI.Page
                 using (SqlConnection connection = new SqlConnection(sqlConnString))
                 {
 
-                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdTbx + "', [CategoryId] = '" + CategoryDescriptionTbx + "',   [Billable]= '" + billableTextTbx + "', [Status] = '3'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
+                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdTbx + "', [CategoryId] = '" + CategoryDescriptionTbx + "',   [Billable]= '" + billableTextTbx + "', [Status] = ''  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
 
                     connection.Open();
                     SqlCommand myCommand = new SqlCommand();

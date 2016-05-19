@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 public partial class Page4 : Page
 {
-    public string pcName = "rogerb";
+    public string pcName = "'rogerb'";
 
     string sqlConnString = @"Data Source=Dev-Intranet;Initial Catalog=DevData;User ID=IntranetUser;Password=IntranetUser";
     private object ClientName;
@@ -19,9 +19,9 @@ public partial class Page4 : Page
             //pcName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
             pcName = pcName.Substring(pcName.IndexOf(@"\") + 1).ToLower();
         if (!IsPostBack)
-            {
-                populateView();
-            }
+        {
+            populateView();
+        }
 
     }
 
@@ -33,6 +33,7 @@ public partial class Page4 : Page
         {
             string sqlQuery = @"SELECT   
 [Id],
+[UserId],
 [EmployeeName],   
 [CloseDate], 
 [ChargeDate], 
@@ -41,11 +42,12 @@ public partial class Page4 : Page
 [Amount], 
 [ClientId],
 [CategoryId],
+[Billable],
 (SELECT [ClientName] 
- FROM [Expense].[Clients] e 
- WHERE t.ClientId = e.ClientId ) AS ClientName 
- FROM [DevData].[Expense].[Transactions] t 
- WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
+FROM [Expense].[Clients] e 
+WHERE t.ClientId = e.ClientId ) AS ClientName 
+FROM [DevData].[Expense].[Transactions] t
+WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
             connection.Open();
             SqlCommand myCommand = new SqlCommand();
             myCommand.Connection = connection;
@@ -57,19 +59,18 @@ public partial class Page4 : Page
             connection.Close();
         }
     }
-
-    protected void clientIdText(object sender, EventArgs e)
+    protected void billableText(object sender, EventArgs e)
     {
         DropDownList ddl = (DropDownList)sender;
         GridViewRow row = (GridViewRow)ddl.Parent.Parent;
-        TextBox tbxBillable = (TextBox)row.Cells[8].FindControl("tbxBillable");
+        TextBox continueTbxBillable = (TextBox)row.Cells[8].FindControl("continueTbxBillable");
 
 
 
         using (SqlConnection connection = new SqlConnection(sqlConnString))
         {
             connection.Open();
-            string sqlQuery3 = @"SELECT [Billable] FROM [Expense].[Clients] WHERE [ClientId] = '" + ddl.SelectedValue + "' ";
+            string sqlQuery3 = @"SELECT [Billable] FROM [Expense].[Clients] WHERE [ClientId] = '" + ddl.SelectedValue + "'";
 
             SqlCommand myCommand = new SqlCommand();
             myCommand.Connection = connection;
@@ -84,7 +85,10 @@ public partial class Page4 : Page
             {
                 while (myReader.Read())
                 {
-                    tbxBillable.Text = myReader["Billable"].ToString();
+                    if (continueTbxBillable != null)
+                    {
+                        continueTbxBillable.Text = myReader["Billable"].ToString();
+                    }
                 }
             }
         }
@@ -92,12 +96,72 @@ public partial class Page4 : Page
 
 
 
-
-    protected void submit(object sender, EventArgs e)
+    public void ddlClientNameTbx(object sender, GridViewRowEventArgs e)
     {
-        string pcName = "";
-        //pcName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-        pcName = pcName.Substring(pcName.IndexOf(@"\") + 1).ToLower();
+
+
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            DropDownList ddlClientName = (e.Row.FindControl("ddlClientNameText") as DropDownList);
+
+
+
+
+            using (SqlConnection connection = new SqlConnection(sqlConnString))
+            {
+                string sqlQuery1 = @"SELECT [ClientName], [ClientId]  FROM [Expense].[Clients]";
+                connection.Open();
+                SqlCommand myCommand = new SqlCommand();
+                myCommand.Connection = connection;
+                myCommand.CommandText = sqlQuery1;
+                myCommand.CommandType = CommandType.Text;
+                myCommand.CommandTimeout = 60;
+                SqlDataReader myReader = myCommand.ExecuteReader();
+                ddlClientName.DataSource = myReader;
+                ddlClientName.DataTextField = "ClientName";
+                ddlClientName.DataValueField = "ClientId";
+                ddlClientName.DataBind();
+                myReader.Close();
+                ddlClientName.Items.Insert(0, new ListItem("Please select"));
+
+                HiddenField ddlClientNameTextHidden = e.Row.FindControl("ddlClientNameTextHidden") as HiddenField;
+                DropDownList ddlClientNameText = e.Row.FindControl("ddlClientNameText") as DropDownList;
+                if (ddlClientNameText != null)
+                {
+                    ddlClientNameText.SelectedValue = ddlClientNameTextHidden.Value;
+                }
+
+
+                DropDownList ddlCategoryDescription = (e.Row.FindControl("ddlCategoryDescriptionText") as DropDownList);
+
+                string sqlQuery2 = @"SELECT [CategoryDescription], [CategoryId] FROM [Expense].[Category]";
+                myCommand = new SqlCommand();
+                myCommand.Connection = connection;
+                myCommand.CommandText = sqlQuery2;
+                myCommand.CommandType = CommandType.Text;
+                myCommand.CommandTimeout = 60;
+                myReader = myCommand.ExecuteReader();
+                ddlCategoryDescription.DataSource = myReader;
+
+                ddlCategoryDescription.DataTextField = "CategoryDescription";
+                ddlCategoryDescription.DataValueField = "CategoryId";
+                ddlCategoryDescription.DataBind();
+
+                HiddenField ddlCategoryDescriptionHidden = e.Row.FindControl("ddlCategoryDescriptionHidden") as HiddenField;
+                DropDownList ddlCategoryDescriptonText = e.Row.FindControl("ddlCategoryDescriptionText") as DropDownList;
+                if (ddlCategoryDescriptonText != null)
+                {
+                    ddlCategoryDescriptonText.SelectedValue = ddlCategoryDescriptionHidden.Value;
+                }
+
+                ddlCategoryDescriptonText.Items.Insert(0, new ListItem("Please select"));
+            }
+        }
+    }
+
+
+    protected void continueSaveButton_Click(object sender, EventArgs e)
+    {
         try
         {
             string query = "";
@@ -109,13 +173,103 @@ public partial class Page4 : Page
 
 
 
-                TextBox clientId = ((TextBox)(row.Cells[6].FindControl("ClientNameTbx")));
-                string clientIdTbx = clientId.Text.ToString();
+                DropDownList clientId = ((DropDownList)(row.Cells[6].FindControl("ddlClientNameText")));
+                string clientIdDdl = clientId.SelectedValue.ToString();
 
 
 
-                TextBox categoryId = ((TextBox)(row.Cells[7].FindControl("CategoryDescriptionTbx")));
-                string CategoryDescriptionTbx = categoryId.Text.ToString();
+                DropDownList categoryId = ((DropDownList)(row.Cells[7].FindControl("ddlCategoryDescriptionText")));
+                string categoryIdDdl = categoryId.SelectedValue.ToString();
+
+                TextBox continueTbxBillable = (TextBox)row.Cells[8].FindControl("tbxBillable");
+                string billableTextTbx = continueTbxBillable.Text;
+
+                HiddenField hiddenId = (HiddenField)row.Cells[6].FindControl("HiddenId");
+                string hiddenIdText = hiddenId.Value;
+
+                TextBox description2Text = (TextBox)row.Cells[4].FindControl("description2Text");
+                string description2 = description2Text.Text;
+
+
+                //if (description2 != "" && clientIdDdl != "Please select" && categoryIdDdl != "Please select" && billableTextTbx != "")
+                //{
+
+
+                using (SqlConnection connection = new SqlConnection(sqlConnString))
+                {
+
+                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdDdl + "', [CategoryId] = '" + categoryIdDdl + "',   [Billable]= '" + billableTextTbx + "', [Status] = '1'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
+
+                    connection.Open();
+                    SqlCommand myCommand = new SqlCommand();
+                    myCommand.Connection = connection;
+                    myCommand.CommandText = queryUpdate;
+                    myCommand.CommandTimeout = 60;
+                    myCommand.ExecuteNonQuery();
+                }
+
+                doneMessage2.Text = "Save complete.";
+
+
+                //}
+
+
+                //else
+                //{
+                //    break;
+                //}
+            }
+        }
+        catch (Exception ex)
+        {
+
+
+            SendErrorEmail1(ex.ToString(), "AMEX - saveButton_Click", pcName);
+
+
+            doneMessage2.Text = "Entries not saved!";
+        }
+    }
+    public static void SendErrorEmail1(string bodyText, string emailSubject, string userId)
+    {
+
+        string to = "mgeppert@ssgstl.com";
+        string from = "emailnoreply@summitstrategies.com";
+        try
+        {
+            MailMessage message = new MailMessage(from, to);
+
+            message.Subject = "Error in 'AMEX Card Holder Save = " + emailSubject;
+            message.Body = "<strong>User:</strong><br />" + userId + "<br /><br />" + bodyText;
+            message.IsBodyHtml = true;
+            SmtpClient client = new SmtpClient();
+            client.Send(message);
+
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
+    protected void submitButton_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            string query = "";
+
+            for (int i = 0; i < infoGridView5.Rows.Count; i++)
+            {
+
+                GridViewRow row = infoGridView5.Rows[i];
+
+                DropDownList clientId = ((DropDownList)(row.Cells[6].FindControl("ddlClientNameText")));
+                string clientIdDdl = clientId.SelectedValue.ToString();
+
+
+
+                DropDownList categoryId = ((DropDownList)(row.Cells[7].FindControl("ddlCategoryDescriptionText")));
+                string categoryIdDdl = categoryId.SelectedValue.ToString();
 
                 TextBox billableText = (TextBox)row.Cells[8].FindControl("tbxBillable");
                 string billableTextTbx = billableText.Text;
@@ -130,7 +284,7 @@ public partial class Page4 : Page
                 using (SqlConnection connection = new SqlConnection(sqlConnString))
                 {
 
-                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdTbx + "', [CategoryId] = '" + CategoryDescriptionTbx + "',   [Billable]= '" + billableTextTbx + "', [Status] = '2'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
+                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdDdl + "', [CategoryId] = '" + categoryIdDdl + "',   [Billable]= '" + billableTextTbx + "', [Status] = '2'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
 
                     connection.Open();
                     SqlCommand myCommand = new SqlCommand();
@@ -139,7 +293,7 @@ public partial class Page4 : Page
                     myCommand.CommandTimeout = 60;
                     myCommand.ExecuteNonQuery();
                 }
-                doneMessage2.Text = "Confirmation complete.";
+                doneMessage2.Text = "Submission complete.";
 
 
             }
@@ -148,13 +302,13 @@ public partial class Page4 : Page
         {
 
 
-            SendErrorEmail(ex.ToString(), "AMEX - saveButton_Click", pcName);
+            SendErrorEmail(ex.ToString(), "AMEX - submitButton_Click", pcName);
 
 
-            doneMessage2.Text = "Entries not saved!";
+            doneMessage2.Text = "Entries not submitted!";
         }
     }
-    public static void SendErrorEmail(string bodyText, string emailSubject, string pcName)
+    public static void SendErrorEmail(string bodyText, string emailSubject, string userId)
     {
 
         string to = "mgeppert@ssgstl.com";
@@ -163,8 +317,8 @@ public partial class Page4 : Page
         {
             MailMessage message = new MailMessage(from, to);
 
-            message.Subject = "Error in 'AMEX = " + emailSubject;
-            message.Body = "<strong>User:</strong><br />" + pcName + "<br /><br />" + bodyText;
+            message.Subject = "Error in 'AMEX Card Holder Submit = " + emailSubject;
+            message.Body = "<strong>User:</strong><br />" + userId + "<br /><br />" + bodyText;
             message.IsBodyHtml = true;
             SmtpClient client = new SmtpClient();
             client.Send(message);
@@ -176,7 +330,4 @@ public partial class Page4 : Page
         }
     }
 
-
-
-  
 }

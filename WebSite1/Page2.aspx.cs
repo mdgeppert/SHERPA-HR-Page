@@ -33,6 +33,7 @@ public partial class Page2 : Page
         {
             string sqlQuery = @"SELECT   
 [Id],
+[UserId],
 [EmployeeName],   
 [CloseDate], 
 [ChargeDate], 
@@ -41,11 +42,9 @@ public partial class Page2 : Page
 [Amount], 
 [ClientId],
 [CategoryId],
-(SELECT [ClientName] 
- FROM [Expense].[Clients] e 
- WHERE t.ClientId = e.ClientId ) AS ClientName 
- FROM [DevData].[Expense].[Transactions] t 
- WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
+[Billable]
+FROM [DevData].[Expense].[Transactions] 
+WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
             connection.Open();
             SqlCommand myCommand = new SqlCommand();
             myCommand.Connection = connection;
@@ -57,49 +56,7 @@ public partial class Page2 : Page
             connection.Close();
         }
     }
-
-
-    public void resume_Click(object sender, EventArgs e)
-
-    {
-        using (SqlConnection connection = new SqlConnection(sqlConnString))
-
-        {
-            string sqlQuery = @"SELECT   
-[Id],
-[EmployeeName],
-[UserId],   
-[CloseDate], 
-[ChargeDate], 
-[Description], 
-[Description2],
-[Amount], 
-[ClientId],
-[CategoryId],
-[Billable],
-(SELECT [ClientName] 
- FROM [Expense].[Clients] e 
- WHERE t.ClientId = e.ClientId ) AS ClientName 
- FROM [DevData].[Expense].[Transactions] t 
- WHERE [Status] = 3";
-            connection.Open();
-            SqlCommand myCommand = new SqlCommand();
-            myCommand.Connection = connection;
-            myCommand.CommandText = sqlQuery;
-            myCommand.CommandType = CommandType.Text;
-            myCommand.CommandTimeout = 60;
-            infoGridView.DataSource = myCommand.ExecuteReader();
-            infoGridView.DataBind();
-            connection.Close();
-        }
-    }
-
-
-
-
-
-
-    protected void clientIdText(object sender, EventArgs e)
+    protected void billableText(object sender, EventArgs e)
     {
         DropDownList ddl = (DropDownList)sender;
         GridViewRow row = (GridViewRow)ddl.Parent.Parent;
@@ -118,7 +75,6 @@ public partial class Page2 : Page
             myCommand.CommandType = CommandType.Text;
             myCommand.CommandTimeout = 60;
             SqlDataReader myReader = myCommand.ExecuteReader();
-
 
 
             if (myReader.HasRows)
@@ -246,10 +202,10 @@ public partial class Page2 : Page
         {
 
 
-            SendErrorEmail1(ex.ToString(), "AMEX - saveButton_Click", pcName);
+            //SendErrorEmail1(ex.ToString(), "AMEX - saveButton_Click", pcName);
 
 
-            doneMessage.Text = "Entries not saved!";
+            doneMessage.Text = "Partial save complete!";
         }
     }
     public static void SendErrorEmail1(string bodyText, string emailSubject, string userId)
@@ -353,15 +309,3 @@ public partial class Page2 : Page
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
