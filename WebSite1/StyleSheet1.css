@@ -154,6 +154,16 @@
     position: absolute;
 }
 
+.saveButton1 {
+    top: -1px;
+    height: 4vh;
+    width: 4vw;
+    position: absolute;
+    left: 42%;
+    right: 1009px;
+    background: magenta;
+}
+
 .types {
     left: 30%;
     top: 3%;

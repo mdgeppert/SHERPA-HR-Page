@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
 using System.Net.Mail;
-using System.Text;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
-
-public partial class Page3 : System.Web.UI.Page
+public partial class Page4 : Page
 {
-
+    public string pcName = "rogerb";
 
     string sqlConnString = @"Data Source=Dev-Intranet;Initial Catalog=DevData;User ID=IntranetUser;Password=IntranetUser";
     private object ClientName;
@@ -18,8 +16,9 @@ public partial class Page3 : System.Web.UI.Page
     public void Page_Load(object sender, EventArgs e)
     {
         using (SqlConnection connection = new SqlConnection(sqlConnString))
-
-            if (!IsPostBack)
+            //pcName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+            pcName = pcName.Substring(pcName.IndexOf(@"\") + 1).ToLower();
+        if (!IsPostBack)
             {
                 populateView();
             }
@@ -34,8 +33,7 @@ public partial class Page3 : System.Web.UI.Page
         {
             string sqlQuery = @"SELECT   
 [Id],
-[EmployeeName],
-[UserId],   
+[EmployeeName],   
 [CloseDate], 
 [ChargeDate], 
 [Description], 
@@ -43,20 +41,19 @@ public partial class Page3 : System.Web.UI.Page
 [Amount], 
 [ClientId],
 [CategoryId],
-[Billable],
 (SELECT [ClientName] 
  FROM [Expense].[Clients] e 
  WHERE t.ClientId = e.ClientId ) AS ClientName 
  FROM [DevData].[Expense].[Transactions] t 
- WHERE [Status] = 2";
+ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
             connection.Open();
             SqlCommand myCommand = new SqlCommand();
             myCommand.Connection = connection;
             myCommand.CommandText = sqlQuery;
             myCommand.CommandType = CommandType.Text;
             myCommand.CommandTimeout = 60;
-            infoGridView.DataSource = myCommand.ExecuteReader();
-            infoGridView.DataBind();
+            infoGridView5.DataSource = myCommand.ExecuteReader();
+            infoGridView5.DataBind();
             connection.Close();
         }
     }
@@ -96,7 +93,7 @@ public partial class Page3 : System.Web.UI.Page
 
 
 
-    protected void finalUpdateInfo(object sender, EventArgs e)
+    protected void submit(object sender, EventArgs e)
     {
         string pcName = "";
         //pcName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
@@ -105,10 +102,10 @@ public partial class Page3 : System.Web.UI.Page
         {
             string query = "";
 
-            for (int i = 0; i < infoGridView.Rows.Count; i++)
+            for (int i = 0; i < infoGridView5.Rows.Count; i++)
             {
 
-                GridViewRow row = infoGridView.Rows[i];
+                GridViewRow row = infoGridView5.Rows[i];
 
 
 
@@ -133,7 +130,7 @@ public partial class Page3 : System.Web.UI.Page
                 using (SqlConnection connection = new SqlConnection(sqlConnString))
                 {
 
-                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdTbx + "', [CategoryId] = '" + CategoryDescriptionTbx + "',   [Billable]= '" + billableTextTbx + "', [Status] = '3'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
+                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdTbx + "', [CategoryId] = '" + CategoryDescriptionTbx + "',   [Billable]= '" + billableTextTbx + "', [Status] = '2'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
 
                     connection.Open();
                     SqlCommand myCommand = new SqlCommand();
@@ -181,57 +178,5 @@ public partial class Page3 : System.Web.UI.Page
 
 
 
-protected void createCsv(object sender, EventArgs e)
-{
-    StringBuilder sb = new StringBuilder();
-
-            using (SqlConnection connection = new SqlConnection(sqlConnString))
-            {
-        string sqlQuery = @"SELECT   
-[Id],
-[UserId],   
-[CloseDate], 
-[ChargeDate], 
-[Description], 
-[Description2],
-[Amount], 
-[ClientId],
-[CategoryId],
-[Billable]
-FROM [DevData].[Expense].[Transactions]
-WHERE [Status] = 3";
-        connection.Open();
-        SqlCommand myCommand = new SqlCommand();
-        myCommand.Connection = connection;
-        myCommand.CommandText = sqlQuery;
-        myCommand.CommandType = CommandType.Text;
-        myCommand.CommandTimeout = 60;
-        SqlDataReader reader = myCommand.ExecuteReader();
-        if (reader.HasRows)
-        {
-            while (reader.Read())
-            {
-                sb.Append(reader["UserId"].ToString() + ",");
-                sb.Append(reader["CloseDate"].ToString() + ",");
-                sb.Append(reader["ChargeDate"].ToString() + ",");
-                sb.Append(reader["Description"].ToString() + ",");
-                sb.Append(reader["Description2"].ToString() + ",");
-                sb.Append(reader["Amount"].ToString() + ",");
-                sb.Append(reader["ClientId"].ToString() + ",");
-                sb.Append(reader["CategoryId"].ToString() + ",");
-                sb.Append(reader["Billable"].ToString() + ",");
-                sb.Append("\r\n");
-            }
-            Response.Output.Write(sb.ToString());
-            Response.Buffer = true;
-            Response.AddHeader("content-disposition",
-             "attachment;filename=amexExpenseData" + DateTime.Now + ".csv");
-            Response.End();
-            Response.Flush();
-            Response.Charset = "";
-            Response.ContentType = "application/text";
-        }
-
-    }
-}
+  
 }

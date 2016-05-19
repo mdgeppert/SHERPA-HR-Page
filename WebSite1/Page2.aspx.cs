@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Net.Mail;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-public partial class Page2 : System.Web.UI.Page
+public partial class Page2 : Page
 {
-    public string pcName = "'clairet'";
+    public string pcName = "'rogerb'";
 
     string sqlConnString = @"Data Source=Dev-Intranet;Initial Catalog=DevData;User ID=IntranetUser;Password=IntranetUser";
     private object ClientName;
@@ -54,10 +51,53 @@ public partial class Page2 : System.Web.UI.Page
             myCommand.Connection = connection;
             myCommand.CommandText = sqlQuery;
             myCommand.CommandType = CommandType.Text;
+            myCommand.CommandTimeout = 60;
             infoGridView.DataSource = myCommand.ExecuteReader();
             infoGridView.DataBind();
+            connection.Close();
         }
     }
+
+
+    public void resume_Click(object sender, EventArgs e)
+
+    {
+        using (SqlConnection connection = new SqlConnection(sqlConnString))
+
+        {
+            string sqlQuery = @"SELECT   
+[Id],
+[EmployeeName],
+[UserId],   
+[CloseDate], 
+[ChargeDate], 
+[Description], 
+[Description2],
+[Amount], 
+[ClientId],
+[CategoryId],
+[Billable],
+(SELECT [ClientName] 
+ FROM [Expense].[Clients] e 
+ WHERE t.ClientId = e.ClientId ) AS ClientName 
+ FROM [DevData].[Expense].[Transactions] t 
+ WHERE [Status] = 3";
+            connection.Open();
+            SqlCommand myCommand = new SqlCommand();
+            myCommand.Connection = connection;
+            myCommand.CommandText = sqlQuery;
+            myCommand.CommandType = CommandType.Text;
+            myCommand.CommandTimeout = 60;
+            infoGridView.DataSource = myCommand.ExecuteReader();
+            infoGridView.DataBind();
+            connection.Close();
+        }
+    }
+
+
+
+
+
 
     protected void clientIdText(object sender, EventArgs e)
     {
@@ -141,6 +181,7 @@ public partial class Page2 : System.Web.UI.Page
         }
     }
 
+    
     protected void saveButton_Click(object sender, EventArgs e)
     {
         try
@@ -172,6 +213,96 @@ public partial class Page2 : System.Web.UI.Page
                 string description2 = description2Text.Text;
 
 
+                //if (description2 != "" && clientIdDdl != "Please select" && categoryIdDdl != "Please select" && billableTextTbx != "")
+                //{
+
+
+                    using (SqlConnection connection = new SqlConnection(sqlConnString))
+                    {
+
+                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdDdl + "', [CategoryId] = '" + categoryIdDdl + "',   [Billable]= '" + billableTextTbx + "', [Status] = '1'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
+
+                    connection.Open();
+                        SqlCommand myCommand = new SqlCommand();
+                        myCommand.Connection = connection;
+                        myCommand.CommandText = queryUpdate;
+                        myCommand.CommandTimeout = 60;
+                        myCommand.ExecuteNonQuery();
+                    }
+
+                    doneMessage.Text = "Save complete.";
+
+
+                //}
+
+
+                //else
+                //{
+                //    break;
+                //}
+            }
+        }
+        catch (Exception ex)
+        {
+
+
+            SendErrorEmail1(ex.ToString(), "AMEX - saveButton_Click", pcName);
+
+
+            doneMessage.Text = "Entries not saved!";
+        }
+    }
+    public static void SendErrorEmail1(string bodyText, string emailSubject, string userId)
+    {
+
+        string to = "mgeppert@ssgstl.com";
+        string from = "emailnoreply@summitstrategies.com";
+        try
+        {
+            MailMessage message = new MailMessage(from, to);
+
+            message.Subject = "Error in 'AMEX Card Holder Save = " + emailSubject;
+            message.Body = "<strong>User:</strong><br />" + userId + "<br /><br />" + bodyText;
+            message.IsBodyHtml = true;
+            SmtpClient client = new SmtpClient();
+            client.Send(message);
+
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
+    protected void submitButton_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            string query = "";
+
+            for (int i = 0; i < infoGridView.Rows.Count; i++)
+            {
+
+                GridViewRow row = infoGridView.Rows[i];
+
+                DropDownList clientId = ((DropDownList)(row.Cells[6].FindControl("ddlClientNameText")));
+                string clientIdDdl = clientId.SelectedValue.ToString();
+
+
+
+                DropDownList categoryId = ((DropDownList)(row.Cells[7].FindControl("ddlCategoryDescriptionText")));
+                string categoryIdDdl = categoryId.SelectedValue.ToString();
+
+                TextBox billableText = (TextBox)row.Cells[8].FindControl("tbxBillable");
+                string billableTextTbx = billableText.Text;
+
+                HiddenField hiddenId = (HiddenField)row.Cells[6].FindControl("HiddenId");
+                string hiddenIdText = hiddenId.Value;
+
+                TextBox description2Text = (TextBox)row.Cells[4].FindControl("description2Text");
+                string description2 = description2Text.Text;
+
+
                 using (SqlConnection connection = new SqlConnection(sqlConnString))
                 {
 
@@ -184,7 +315,7 @@ public partial class Page2 : System.Web.UI.Page
                     myCommand.CommandTimeout = 60;
                     myCommand.ExecuteNonQuery();
                 }
-                doneMessage.Text = "Save complete.";
+                doneMessage.Text = "Submission complete.";
 
 
             }
@@ -193,10 +324,10 @@ public partial class Page2 : System.Web.UI.Page
         {
 
 
-            SendErrorEmail(ex.ToString(), "AMEX - saveButton_Click", pcName);
+            SendErrorEmail(ex.ToString(), "AMEX - submitButton_Click", pcName);
 
 
-            doneMessage.Text = "Entries not saved!";
+            doneMessage.Text = "Entries not submitted!";
         }
     }
     public static void SendErrorEmail(string bodyText, string emailSubject, string userId)
@@ -208,7 +339,7 @@ public partial class Page2 : System.Web.UI.Page
         {
             MailMessage message = new MailMessage(from, to);
 
-            message.Subject = "Error in 'AMEX = " + emailSubject;
+            message.Subject = "Error in 'AMEX Card Holder Submit = " + emailSubject;
             message.Body = "<strong>User:</strong><br />" + userId + "<br /><br />" + bodyText;
             message.IsBodyHtml = true;
             SmtpClient client = new SmtpClient();

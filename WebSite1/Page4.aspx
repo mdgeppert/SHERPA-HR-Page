@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Page2.aspx.cs" Inherits="Page2" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Page4.aspx.cs" Inherits="Page4" %>
 
 <!DOCTYPE html>
 
@@ -18,25 +18,24 @@
         <div class="col-md-12">
             <div class="row">
                 <form id="display" runat="server">
-                    <asp:Button ID="saveButton1" runat="server" Text="Save" OnClick="saveButton_Click" AutoPostBack="true" Height="26px" style="margin-left: 720px" Width="64px" />
-                    <asp:Button ID="startButton" runat="server" Text="Start" OnClick="resume_Click" AutoPostBack="true" Height="26px" style="margin-left: 680px" Width="64px"/>
-                    <asp:Button ID="submitButton1" runat="server" OnClick="submitButton_Click" Text="Submit" AutoPostBack="true" Height="26px" Width="64px" />
-                    <asp:Label ID="doneMessage"  runat="server"  />
-                    <asp:GridView ID="infoGridView" runat="server" Height="50px" AutoGenerateColumns="False" OnRowDataBound="ddlClientNameTbx" BackColor="White" BorderColor="#CCCCCC" Style="margin-left: 3px; margin-top: 85px; margin-bottom: 0px;" Width="97%" BorderStyle="None" CellPadding="10" BorderWidth="1px" GridLines="None">
+                    <asp:Label ID="doneMessage2" runat="server" />
+                    <asp:Button ID="finalSaveButton" runat="server" OnClick="submit" Text="Submit" style="margin-left: 769px" Width="76px" />
+                    
+                    <asp:GridView ID="infoGridView5" runat="server"  Height="50px"  AutoGenerateColumns="False" BackColor="White" BorderColor="#CCCCCC" style="margin-left: 67px; margin-top: 85px; margin-bottom: 0px;" Width="95%" BorderStyle="None" CellPadding="10" BorderWidth="1px" GridLines="None">
                         <AlternatingRowStyle BackColor="#CCD9FF" />
                         <Columns>
 
-                            <asp:BoundField DataField="EmployeeName" HeaderText="Employee Name" ReadOnly="True"><%--Employee Name--%>
+                            <asp:BoundField DataField="UserId" HeaderText="User Id" ReadOnly="True"><%--Employee Name--%>
                                 <ControlStyle Font-Names="Arial" Font-Bold />
-                                <HeaderStyle Font-Names="Arial Black" Wrap="False" CssClass="margin-left: 0;" HorizontalAlign="Left" />
+                                <HeaderStyle Font-Names="Arial Black" Wrap="False" CssClass="color: orange;" HorizontalAlign="Left" />
                                 <ItemStyle Wrap="False" Font-Names="Arial" Font-Bold />
                             </asp:BoundField>
-                            <asp:BoundField DataField="CloseDate" HeaderText="Close Date" ReadOnly="True"><%--Close Date--%>
+                            <asp:BoundField DataField="CloseDate" HeaderText="Close Date" ReadOnly="True" DataFormatString="{0:MM/dd/yyyy}"><%--Close Date--%>
                                 <ControlStyle Font-Names="Arial" Font-Bold />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
                                 <ItemStyle Wrap="False" Font-Names="Arial" Font-Bold />
                             </asp:BoundField>
-                            <asp:BoundField DataField="ChargeDate" HeaderText="Charge Date" ReadOnly="True"><%--Charge Date--%>
+                            <asp:BoundField DataField="ChargeDate" HeaderText="Charge Date" ReadOnly="True" DataFormatString="{0:MM/dd/yyyy}"><%--Charge Date--%>
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
                                 <ItemStyle Font-Names="Arial" Font-Bold Wrap="False" />
                             </asp:BoundField>
@@ -48,50 +47,61 @@
                                 <ItemTemplate>
                                     <asp:HiddenField ID="HiddenId" runat="server" Value='<%# Bind("Id") %>' />
                                     <asp:TextBox runat="server" ID="description2Text" AutoPostBack="true" Text='<%# Bind("Description2") %>' />
-                                    <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="description2Text" ErrorMessage="*" ForeColor="Red" Font-Size="XX-Large"></asp:RequiredFieldValidator>--%>
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ControlToValidate="description2Text" ErrorMessage="*" ForeColor="Red" Font-Size="XX-Large"></asp:RequiredFieldValidator>
                                 </ItemTemplate>
                                 <ControlStyle Font-Bold="True" Font-Names="Arial" />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
                                 <ItemStyle Font-Bold="True" Font-Names="Arial" Wrap="False" />
                             </asp:TemplateField>
 
-                            <asp:TemplateField HeaderText="Client Name"><%--ClientName--%>
+                            <asp:TemplateField HeaderText="Client Id"><%--ClientName--%>
                                 <ItemTemplate>
-                                    <asp:DropDownList ID="ddlClientNameText" runat="server" OnSelectedIndexChanged="clientIdText" AutoPostBack="true"></asp:DropDownList>
-                                    <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="ddlClientNameText" ErrorMessage="*" ForeColor="Red" InitialValue="Please select" Font-Size="XX-Large"></asp:RequiredFieldValidator>--%>
+                                    <asp:TextBox runat="server" ID="ClientNameTbx" AutoPostBack="true" Text='<%# Bind("ClientId") %>' />
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ControlToValidate="ClientNameTbx" ErrorMessage="*" ForeColor="Red" Font-Size="XX-Large"></asp:RequiredFieldValidator>
                                 </ItemTemplate>
                                 <ControlStyle Font-Bold="True" Font-Names="Arial" />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
                                 <ItemStyle Font-Names="Arial" Font-Bold Wrap="False" />
                             </asp:TemplateField>
 
-                            <asp:TemplateField HeaderText="Category Description"><%--Category Description--%>
+                            <asp:CheckBoxField >
+
+                            <HeaderStyle HorizontalAlign="Left" />
+                            </asp:CheckBoxField>
+
+                            <asp:TemplateField HeaderText="Category Id"><%--Category Description--%>
                                 <ItemTemplate>
-                                    <asp:DropDownList ID="ddlCategoryDescriptionText" runat="server"></asp:DropDownList>
-                                    <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="ddlCategoryDescriptionText" ErrorMessage="*" ForeColor="Red" InitialValue="Please select" Font-Size="XX-Large"></asp:RequiredFieldValidator>--%>
+                                    <asp:TextBox runat="server" ID="CategoryDescriptionTbx" AutoPostBack="true" Text='<%# Bind("CategoryId") %>' />
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator7" runat="server" ControlToValidate="CategoryDescriptionTbx" ErrorMessage="*" ForeColor="Red" Font-Size="XX-Large"></asp:RequiredFieldValidator>
                                 </ItemTemplate>
                                 <ControlStyle Font-Bold="True" Font-Names="Arial" />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
                                 <ItemStyle Font-Names="Arial" Font-Bold Wrap="False" />
                             </asp:TemplateField>
+
+                            <asp:CheckBoxField >
+
+                            <HeaderStyle HorizontalAlign="Left" />
+                            </asp:CheckBoxField>
 
                             <asp:TemplateField HeaderText="Billable"><%--Billable--%>
                                 <ItemTemplate>
-                                    <asp:TextBox runat="server" ID="tbxBillable" OnSelectedIndexChanged="clientIdText" AutoPostBack="true" />
-                                    <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" ControlToValidate="tbxBillable" ErrorMessage="*" OnClick="saveButton_Click" ForeColor="Red" Font-Size="XX-Large"></asp:RequiredFieldValidator>--%>
+                                    <asp:TextBox runat="server" ID="tbxBillable" OnSelectedIndexChanged="clientIdText" AutoPostBack="true" Text='<%# Bind("Billable") %>' />
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator8" runat="server" ControlToValidate="tbxBillable" ErrorMessage="*" ForeColor="Red" Font-Size="XX-Large"></asp:RequiredFieldValidator>
                                 </ItemTemplate>
                                 <ControlStyle Font-Bold="True" Font-Names="Arial" />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" Font-Bold="False" HorizontalAlign="Left" />
                                 <ItemStyle Font-Names="Arial" Font-Bold Wrap="False" />
 
                             </asp:TemplateField>
-
                             <asp:BoundField DataField="Amount" HeaderText="Amount" ReadOnly="True" HtmlEncode="false" DataFormatString="$ {0:###,###,###.00}"><%--Amount--%>
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Right" />
                                 <ItemStyle Font-Names="Arial" Font-Bold HorizontalAlign="Right" Wrap="False" />
                             </asp:BoundField>
 
+                            <asp:CheckBoxField />
                         </Columns>
+                        
                         <FooterStyle BackColor="White" ForeColor="#000066" />
                         <HeaderStyle BackColor="#668CFF" Font-Bold="False" ForeColor="Black" Font-Names="Arial Black" Height="60px" />
                         <PagerStyle BackColor="White" ForeColor="#000066" HorizontalAlign="Left" />
@@ -102,6 +112,8 @@
                         <SortedDescendingCellStyle BackColor="#CAC9C9" />
                         <SortedDescendingHeaderStyle BackColor="#00547E" />
                     </asp:GridView>
+                    <asp:HiddenField id="saveHiddenCsv" runat="server"></asp:HiddenField>
+                    <asp:HiddenField id="HiddenField1" runat="server"></asp:HiddenField>
                 </form>
             </div>
         </div>
