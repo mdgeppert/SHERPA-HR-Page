@@ -181,7 +181,7 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
                 DropDownList categoryId = ((DropDownList)(row.Cells[7].FindControl("ddlCategoryDescriptionText")));
                 string categoryIdDdl = categoryId.SelectedValue.ToString();
 
-                TextBox continueTbxBillable = (TextBox)row.Cells[8].FindControl("tbxBillable");
+                TextBox continueTbxBillable = (TextBox)row.Cells[8].FindControl("continueTbxBillable");
                 string billableTextTbx = continueTbxBillable.Text;
 
                 HiddenField hiddenId = (HiddenField)row.Cells[6].FindControl("HiddenId");
@@ -209,25 +209,11 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
                 }
 
                 doneMessage2.Text = "Save complete.";
-
-
-                //}
-
-
-                //else
-                //{
-                //    break;
-                //}
             }
         }
         catch (Exception ex)
         {
-
-
-            SendErrorEmail1(ex.ToString(), "AMEX - saveButton_Click", pcName);
-
-
-            doneMessage2.Text = "Entries not saved!";
+            doneMessage2.Text = "Saved, but batch not complete!";
         }
     }
     public static void SendErrorEmail1(string bodyText, string emailSubject, string userId)
@@ -252,7 +238,7 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
         }
     }
 
-    protected void submitButton_Click(object sender, EventArgs e)
+    protected void continuedSubmitButton_Click(object sender, EventArgs e)
     {
         try
         {
@@ -271,14 +257,15 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
                 DropDownList categoryId = ((DropDownList)(row.Cells[7].FindControl("ddlCategoryDescriptionText")));
                 string categoryIdDdl = categoryId.SelectedValue.ToString();
 
-                TextBox billableText = (TextBox)row.Cells[8].FindControl("tbxBillable");
-                string billableTextTbx = billableText.Text;
+                TextBox continueTbxBillable = (TextBox)row.Cells[8].FindControl("continueTbxBillable");
+                string billableTextTbx = continueTbxBillable.Text;
 
                 HiddenField hiddenId = (HiddenField)row.Cells[6].FindControl("HiddenId");
                 string hiddenIdText = hiddenId.Value;
 
                 TextBox description2Text = (TextBox)row.Cells[4].FindControl("description2Text");
                 string description2 = description2Text.Text;
+
 
 
                 using (SqlConnection connection = new SqlConnection(sqlConnString))
@@ -293,19 +280,15 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
                     myCommand.CommandTimeout = 60;
                     myCommand.ExecuteNonQuery();
                 }
-                doneMessage2.Text = "Submission complete.";
-
-
+                {
+                    doneMessage2.Text = "Submission complete.";
+                }
             }
         }
         catch (Exception ex)
         {
 
-
-            SendErrorEmail(ex.ToString(), "AMEX - submitButton_Click", pcName);
-
-
-            doneMessage2.Text = "Entries not submitted!";
+            doneMessage2.Text = " All items must be complete in order to submit!";
         }
     }
     public static void SendErrorEmail(string bodyText, string emailSubject, string userId)

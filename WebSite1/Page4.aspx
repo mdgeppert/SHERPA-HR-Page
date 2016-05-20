@@ -19,8 +19,9 @@
             <div class="row">
                 <form id="display" runat="server">
                     <asp:Button ID="saveButton1" runat="server" Text="Save" OnClick="continueSaveButton_Click" AutoPostBack="true" Height="26px" style="margin-left: 720px" Width="64px" />
-                    <asp:Button ID="submitButton1" runat="server" OnClick="submitButton_Click" Text="Submit" AutoPostBack="true" Height="26px" Width="64px" />
+                    <asp:Button ID="submitButton2" runat="server" OnClick="continuedSubmitButton_Click" Text="Submit" AutoPostBack="true" Height="26px" Width="64px" />
                     <asp:Label ID="doneMessage2"  runat="server"  />
+                    <asp:Label ID="incompleteMessage1" runat="server" />
                     <asp:GridView ID="infoGridView5" runat="server" Height="50px" AutoGenerateColumns="False" OnRowDataBound="ddlClientNameTbx" BackColor="White" BorderColor="#CCCCCC" Style="margin-left: 3px; margin-top: 85px; margin-bottom: 0px;" Width="97%" BorderStyle="None" CellPadding="10" BorderWidth="1px" GridLines="None">
                         <AlternatingRowStyle BackColor="#CCD9FF" />
                         <Columns>

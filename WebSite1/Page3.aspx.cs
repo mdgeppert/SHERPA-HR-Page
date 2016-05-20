@@ -133,7 +133,7 @@ public partial class Page3 : System.Web.UI.Page
                 using (SqlConnection connection = new SqlConnection(sqlConnString))
                 {
 
-                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdTbx + "', [CategoryId] = '" + CategoryDescriptionTbx + "',   [Billable]= '" + billableTextTbx + "', [Status] = ''  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
+                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdTbx + "', [CategoryId] = '" + CategoryDescriptionTbx + "',   [Billable]= '" + billableTextTbx + "', [Status] = '3'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
 
                     connection.Open();
                     SqlCommand myCommand = new SqlCommand();
@@ -179,15 +179,13 @@ public partial class Page3 : System.Web.UI.Page
         }
     }
 
+    protected void createCsv(object sender, EventArgs e)
+    {
+        StringBuilder sb = new StringBuilder();
 
-
-protected void createCsv(object sender, EventArgs e)
-{
-    StringBuilder sb = new StringBuilder();
-
-            using (SqlConnection connection = new SqlConnection(sqlConnString))
-            {
-        string sqlQuery = @"SELECT   
+        using (SqlConnection connection = new SqlConnection(sqlConnString))
+        {
+            string sqlQuery = @"SELECT   
 [Id],
 [UserId],   
 [CloseDate], 
@@ -200,38 +198,38 @@ protected void createCsv(object sender, EventArgs e)
 [Billable]
 FROM [DevData].[Expense].[Transactions]
 WHERE [Status] = 3";
-        connection.Open();
-        SqlCommand myCommand = new SqlCommand();
-        myCommand.Connection = connection;
-        myCommand.CommandText = sqlQuery;
-        myCommand.CommandType = CommandType.Text;
-        myCommand.CommandTimeout = 60;
-        SqlDataReader reader = myCommand.ExecuteReader();
-        if (reader.HasRows)
-        {
-            while (reader.Read())
+            connection.Open();
+            SqlCommand myCommand = new SqlCommand();
+            myCommand.Connection = connection;
+            myCommand.CommandText = sqlQuery;
+            myCommand.CommandType = CommandType.Text;
+            myCommand.CommandTimeout = 60;
+            SqlDataReader reader = myCommand.ExecuteReader();
+            if (reader.HasRows)
             {
-                sb.Append(reader["UserId"].ToString() + ",");
-                sb.Append(reader["CloseDate"].ToString() + ",");
-                sb.Append(reader["ChargeDate"].ToString() + ",");
-                sb.Append(reader["Description"].ToString() + ",");
-                sb.Append(reader["Description2"].ToString() + ",");
-                sb.Append(reader["Amount"].ToString() + ",");
-                sb.Append(reader["ClientId"].ToString() + ",");
-                sb.Append(reader["CategoryId"].ToString() + ",");
-                sb.Append(reader["Billable"].ToString() + ",");
-                sb.Append("\r\n");
+                while (reader.Read())
+                {
+                    sb.Append(reader["UserId"].ToString() + ",");
+                    sb.Append(reader["CloseDate"].ToString() + ",");
+                    sb.Append(reader["ChargeDate"].ToString() + ",");
+                    sb.Append(reader["Description"].ToString() + ",");
+                    sb.Append(reader["Description2"].ToString() + ",");
+                    sb.Append(reader["Amount"].ToString() + ",");
+                    sb.Append(reader["ClientId"].ToString() + ",");
+                    sb.Append(reader["CategoryId"].ToString() + ",");
+                    sb.Append(reader["Billable"].ToString() + ",");
+                    sb.Append("\r\n");
+                }
+                Response.Output.Write(sb.ToString());
+                Response.Buffer = true;
+                Response.AddHeader("content-disposition",
+                 "attachment;filename=amexExpenseData" + DateTime.Now + ".csv");
+                Response.End();
+                Response.Flush();
+                Response.Charset = "";
+                Response.ContentType = "application/text";
             }
-            Response.Output.Write(sb.ToString());
-            Response.Buffer = true;
-            Response.AddHeader("content-disposition",
-             "attachment;filename=amexExpenseData" + DateTime.Now + ".csv");
-            Response.End();
-            Response.Flush();
-            Response.Charset = "";
-            Response.ContentType = "application/text";
-        }
 
+        }
     }
-}
 }
