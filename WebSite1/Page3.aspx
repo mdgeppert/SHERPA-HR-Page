@@ -11,14 +11,31 @@
             height: 115px;
             width: 1824px;
         }
+        .auto-style2 {
+            left: 3%;
+            top: 3%;
+            height: 192px;
+        }
+        .auto-style3 {
+            height: 27px;
+        }
+        .auto-style4 {
+            height: 115px;
+            width: 1824px;
+            margin-left: 47px;
+        }
+        .auto-style5 {
+            margin-left: 3px;
+            margin-top: 46px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
 
         <div class="col-md-12">
-            <div class="row">
-                <form id="display" runat="server">
+            <div class="auto-style4">
+                <form id="display" runat="server" class="auto-style2">
                     <div class="row">
                         <div class="col-md-2" display="inline">
                             <table>
@@ -27,47 +44,51 @@
                                         <div id="invoiceNumberLabel">Invoice Number:</div>
                                     </td>
                                     <td>
-                                        <asp:TextBox ID="invoiceNumber" runat="server"></asp:TextBox></td>
+                                        <asp:TextBox ID="invoiceNumber" runat="server"></asp:TextBox>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <div id="transactionDateLabel">Transaction Date:</div>
                                     </td>
                                     <td>
-                                        <asp:TextBox ID="transactionDate" runat="server"></asp:TextBox></td>
+                                        <asp:TextBox ID="transactionDate" runat="server"></asp:TextBox>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <div id="dueDateLabel">Due Date:</div>
                                     </td>
                                     <td>
-                                        <asp:TextBox ID="dueDate" runat="server"></asp:TextBox></td>
+                                        <asp:TextBox ID="dueDate" runat="server"></asp:TextBox>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <div id="apAccountNumberLabel">A/P Account Number:</div>
                                     </td>
                                     <td>
-                                        <asp:TextBox ID="apAccountNumber" runat="server"></asp:TextBox></td>
+                                        <asp:TextBox ID="apAccountNumber" runat="server"></asp:TextBox>
+                                    </td>
                                 </tr>
-                            </table>
-                            <table>
                                 <tr>
-                                    <div ID="transactionCountLabel">Transaction Count:</div>
-                                    <asp:Label ID="transactionCountDisplay" OnDataBinding="countTransactions" runat="server"></asp:Label>
-                                    </tr>
-                                <tr>
-                                    <asp:Label ID="doneMessage2" runat="server" />
+                                    <td>
+                                        <asp:Button ID="toCsv" runat="server" OnClick="createCsv" Text="Create CSV"/>
+                                    </td>
+                                    <td class="auto-style3">
+                                        <asp:Button ID="completeSave" OnClick="saveAndComplete" runat="server" Text="Save and Complete" />
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <asp:Label ID="doneMessage3" runat="server"></asp:Label>
+                                    </td>
                                 </tr>
                             </table>
                         </div>
                     </div>
                     
-                    <asp:Button ID="finalSaveButton" runat="server" OnClick="finalUpdateInfo" Text="Confirm" Style="margin-left: 769px" Width="76px" />
-                    <asp:Button ID="transactionCount" runat="server" OnClick="countTransactions" style="margin-left: 36px" Text="Tx Count" Width="96px" />
-                    <asp:Button ID="toCsv" runat="server" OnClick="createCsv" Text="Create CSV" Height="24px" Style="margin-left: 39px" Width="85px" />
 
-                    <asp:GridView ID="infoGridView" runat="server" Height="50px" AutoGenerateColumns="False" BackColor="White" BorderColor="#CCCCCC" Style="margin-left: 26px; margin-top: 21px; margin-bottom: 0px;" Width="95%" BorderStyle="None" CellPadding="10" BorderWidth="1px" GridLines="None">
+
+
+                    <asp:GridView ID="infoGridView" runat="server" Height="126px" AutoGenerateColumns="False" BackColor="White" BorderColor="#CCCCCC" Style="margin-bottom: 0px;" Width="95%" BorderStyle="None" CellPadding="10" BorderWidth="1px" GridLines="None" CssClass="auto-style5">
                         <AlternatingRowStyle BackColor="#CCD9FF" />
                         <Columns>
 
@@ -128,7 +149,7 @@
                             <asp:CheckBoxField>
 
                                 <HeaderStyle HorizontalAlign="Left" />
-                            </asp:CheckBoxField>                       
+                            </asp:CheckBoxField>
                             <asp:BoundField DataField="Amount" HeaderText="Amount" ReadOnly="True" HtmlEncode="false" DataFormatString="$ {0:###,###,###.00}"><%--Amount--%>
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Right" />
                                 <ItemStyle Font-Names="Arial" Font-Bold HorizontalAlign="Right" Wrap="False" />

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
 using System.Net.Mail;
 using System.Text;
 using System.Web.UI.WebControls;
@@ -9,8 +8,6 @@ using System.Web.UI.WebControls;
 
 public partial class Page3 : System.Web.UI.Page
 {
-
-
     string sqlConnString = @"Data Source=Dev-Intranet;Initial Catalog=DevData;User ID=IntranetUser;Password=IntranetUser";
     private object ClientName;
     private object input;
@@ -23,14 +20,10 @@ public partial class Page3 : System.Web.UI.Page
             {
                 populateView();
             }
-
     }
-
-
     public void populateView()
     {
         using (SqlConnection connection = new SqlConnection(sqlConnString))
-
         {
             string sqlQuery = @"SELECT   
 [Id],
@@ -59,95 +52,6 @@ public partial class Page3 : System.Web.UI.Page
             connection.Close();
         }
     }
-
-    protected void countTransactions(object sender, EventArgs e)
-    {
-
-    }
-
-    protected void finalUpdateInfo(object sender, EventArgs e)
-    {
-        string pcName = "";
-        //pcName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-        pcName = pcName.Substring(pcName.IndexOf(@"\") + 1).ToLower();
-        try
-        {
-            string query = "";
-
-            for (int i = 0; i < infoGridView.Rows.Count; i++)
-            {
-
-                GridViewRow row = infoGridView.Rows[i];
-
-
-
-                TextBox clientId = ((TextBox)(row.Cells[6].FindControl("ClientNameTbx")));
-                string clientIdTbx = clientId.Text.ToString();
-
-
-
-                TextBox categoryId = ((TextBox)(row.Cells[7].FindControl("CategoryDescriptionTbx")));
-                string CategoryDescriptionTbx = categoryId.Text.ToString();
-
-                //TextBox billableText = (TextBox)row.Cells[8].FindControl("tbxBillable");
-                //string billableTextTbx = billableText.Text;
-
-                HiddenField hiddenId = (HiddenField)row.Cells[6].FindControl("HiddenId");
-                string hiddenIdText = hiddenId.Value;
-
-                TextBox description2Text = (TextBox)row.Cells[4].FindControl("description2Text");
-                string description2 = description2Text.Text;
-
-
-                using (SqlConnection connection = new SqlConnection(sqlConnString))
-                {
-
-                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdTbx + "', [CategoryId] = '" + CategoryDescriptionTbx + "', [Status] = '3'   WHERE  [Id] = '" + hiddenIdText + "' ;\n";
-
-                    connection.Open();
-                    SqlCommand myCommand = new SqlCommand();
-                    myCommand.Connection = connection;
-                    myCommand.CommandText = queryUpdate;
-                    myCommand.CommandTimeout = 60;
-                    myCommand.ExecuteNonQuery();
-                }
-                doneMessage2.Text = "Confirmation complete.";
-
-
-            }
-        }
-        catch (Exception ex)
-        {
-
-
-            SendErrorEmail(ex.ToString(), "AMEX - saveButton_Click", pcName);
-
-
-            doneMessage2.Text = "Entries not saved!";
-        }
-    }
-    public static void SendErrorEmail(string bodyText, string emailSubject, string pcName)
-    {
-
-        string to = "mgeppert@ssgstl.com";
-        string from = "emailnoreply@summitstrategies.com";
-        try
-        {
-            MailMessage message = new MailMessage(from, to);
-
-            message.Subject = "Error in 'AMEX = " + emailSubject;
-            message.Body = "<strong>User:</strong><br />" + pcName + "<br /><br />" + bodyText;
-            message.IsBodyHtml = true;
-            SmtpClient client = new SmtpClient();
-            client.Send(message);
-
-        }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
-
     protected void createCsv(object sender, EventArgs e)
     {
         StringBuilder sb = new StringBuilder();
@@ -167,7 +71,7 @@ public partial class Page3 : System.Web.UI.Page
 (SELECT [ClientName] 
  FROM [Expense].[Clients] e 
  WHERE t.ClientId = e.ClientId ) AS ClientName,
-(SELECT COALESCE('<div>' + CAST(p.Peachtree AS varchar(100)) + '</div>', '') FROM [Expense].[PeachtreeUser] p WHERE t.UserId = p.UserId FOR XML PATH('')) AS EmployeeId
+(SELECT COALESCE(CAST(p.Peachtree AS varchar(100)), '') FROM [Expense].[PeachtreeUser] p WHERE t.UserId = p.UserId FOR XML PATH('')) AS EmployeeId
  FROM [DevData].[Expense].[Transactions] t 
  WHERE [Status] = 2 Order By [UserId]";
             connection.Open();
@@ -179,13 +83,25 @@ public partial class Page3 : System.Web.UI.Page
             SqlDataReader reader = myCommand.ExecuteReader();
             if (reader.HasRows)
             {
+                sb.Append("Employee ID" + ",");
+                sb.Append("Invoice Number" + ",");
+                sb.Append("Transaction_Date" + ",");
+                sb.Append("Due Date" + ",");
+                sb.Append("A/P Account Number" + ",");
+                sb.Append("Number of Entries for Vendor" + ",");
+                sb.Append("Description" + ",");
+                sb.Append("G/L Account Number" + ",");
+                sb.Append("Approved Entry Amount" + ",");
+                sb.Append("Client Code" + ",");
+                sb.Append("\r\n");
+
                 while (reader.Read())
                 {
                     sb.Append(reader["EmployeeId"].ToString() + ",");
                     sb.Append(invoiceNumber.Text + ",");
                     sb.Append(transactionDate.Text + ",");
                     sb.Append(dueDate.Text + ",");
-                    sb.Append(apAccountNumber.Text + ","); 
+                    sb.Append(apAccountNumber.Text + ",");
                     sb.Append(reader["NumberOfTransactions"].ToString() + ",");
 
                     sb.Append(reader["ChargeDate"].ToString() + "-");
@@ -203,12 +119,71 @@ public partial class Page3 : System.Web.UI.Page
                 Response.Buffer = true;
                 Response.AddHeader("content-disposition",
                  "attachment;filename=amexExpenseData" + DateTime.Now + ".csv");
-                Response.End();
-                Response.Flush();
+
                 Response.Charset = "";
                 Response.ContentType = "application/text";
+                Response.End();
+                Response.Flush();
             }
+        }
+    }
+    protected void saveAndComplete(object sender, EventArgs e)
+    {
+        string pcName = "";
+        pcName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+        pcName = pcName.Substring(pcName.IndexOf(@"\") + 1).ToLower();
+        try
+        {
+            string query = "";
+            for (int i = 0; i < infoGridView.Rows.Count; i++)
+            {
+                GridViewRow row = infoGridView.Rows[i];
+                TextBox clientId = ((TextBox)(row.Cells[6].FindControl("ClientNameTbx")));
+                string clientIdTbx = clientId.Text.ToString();
+                TextBox categoryId = ((TextBox)(row.Cells[7].FindControl("CategoryDescriptionTbx")));
+                string CategoryDescriptionTbx = categoryId.Text.ToString();
+                HiddenField hiddenId = (HiddenField)row.Cells[6].FindControl("HiddenId");
+                string hiddenIdText = hiddenId.Value;
+                TextBox description2Text = (TextBox)row.Cells[4].FindControl("description2Text");
+                string description2 = description2Text.Text;
 
+                using (SqlConnection connection = new SqlConnection(sqlConnString))
+                {
+                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdTbx + "', [CategoryId] = '" + CategoryDescriptionTbx + "', [Status] = '3'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
+                    connection.Open();
+                    SqlCommand myCommand = new SqlCommand();
+                    myCommand.Connection = connection;
+                    myCommand.CommandText = queryUpdate;
+                    myCommand.CommandTimeout = 60;
+                    myCommand.ExecuteNonQuery();
+                }
+                doneMessage3.Text = "Process complete.";
+            }
+        }
+        catch (Exception ex)
+        {
+            SendErrorEmail(ex.ToString(), "AMEX - saveButton_Click", pcName);
+            doneMessage3.Text = "Entries not saved!";
+        }
+    }
+    public static void SendErrorEmail(string bodyText, string emailSubject, string pcName)
+    {
+        string to = "mgeppert@ssgstl.com";
+        string from = "emailnoreply@summitstrategies.com";
+        try
+        {
+            MailMessage message = new MailMessage(from, to);
+            message.Subject = "Error in 'AMEX = " + emailSubject;
+            message.Body = "<strong>User:</strong><br />" + pcName + "<br /><br />" + bodyText;
+            message.IsBodyHtml = true;
+            SmtpClient client = new SmtpClient();
+            client.Send(message);
+        }
+        catch (Exception ex)
+        {
+            throw ex;
         }
     }
 }
+
+

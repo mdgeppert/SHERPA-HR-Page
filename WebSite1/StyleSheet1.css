@@ -196,6 +196,22 @@
  }
 
 strong{color: red;}
-/*#count{
-    float: right;
-}*/
+
+#doneMessage3{
+    font-size: 22px;
+    font-weight: 800;
+}
+
+#toCsv{
+    margin-top: 4px;
+    height: 26px;
+    background: #2F2FFF;
+    color: #CCCCCC;
+}
+
+#completeSave{
+    height: 26px;
+    margin-top: -2px;
+    background: #2F2FFF;
+    color: #CCCCCC;
+}
