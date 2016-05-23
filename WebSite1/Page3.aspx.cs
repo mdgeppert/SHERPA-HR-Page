@@ -43,7 +43,6 @@ public partial class Page3 : System.Web.UI.Page
 [Amount], 
 [ClientId],
 [CategoryId],
-[Billable],
 (SELECT [ClientName] 
  FROM [Expense].[Clients] e 
  WHERE t.ClientId = e.ClientId ) AS ClientName 
@@ -61,40 +60,10 @@ public partial class Page3 : System.Web.UI.Page
         }
     }
 
-    protected void clientIdText(object sender, EventArgs e)
+    protected void countTransactions(object sender, EventArgs e)
     {
-        DropDownList ddl = (DropDownList)sender;
-        GridViewRow row = (GridViewRow)ddl.Parent.Parent;
-        TextBox tbxBillable = (TextBox)row.Cells[8].FindControl("tbxBillable");
 
-
-
-        using (SqlConnection connection = new SqlConnection(sqlConnString))
-        {
-            connection.Open();
-            string sqlQuery3 = @"SELECT [Billable] FROM [Expense].[Clients] WHERE [ClientId] = '" + ddl.SelectedValue + "' ";
-
-            SqlCommand myCommand = new SqlCommand();
-            myCommand.Connection = connection;
-            myCommand.CommandText = sqlQuery3;
-            myCommand.CommandType = CommandType.Text;
-            myCommand.CommandTimeout = 60;
-            SqlDataReader myReader = myCommand.ExecuteReader();
-
-
-
-            if (myReader.HasRows)
-            {
-                while (myReader.Read())
-                {
-                    tbxBillable.Text = myReader["Billable"].ToString();
-                }
-            }
-        }
     }
-
-
-
 
     protected void finalUpdateInfo(object sender, EventArgs e)
     {
@@ -120,8 +89,8 @@ public partial class Page3 : System.Web.UI.Page
                 TextBox categoryId = ((TextBox)(row.Cells[7].FindControl("CategoryDescriptionTbx")));
                 string CategoryDescriptionTbx = categoryId.Text.ToString();
 
-                TextBox billableText = (TextBox)row.Cells[8].FindControl("tbxBillable");
-                string billableTextTbx = billableText.Text;
+                //TextBox billableText = (TextBox)row.Cells[8].FindControl("tbxBillable");
+                //string billableTextTbx = billableText.Text;
 
                 HiddenField hiddenId = (HiddenField)row.Cells[6].FindControl("HiddenId");
                 string hiddenIdText = hiddenId.Value;
@@ -133,7 +102,7 @@ public partial class Page3 : System.Web.UI.Page
                 using (SqlConnection connection = new SqlConnection(sqlConnString))
                 {
 
-                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdTbx + "', [CategoryId] = '" + CategoryDescriptionTbx + "',   [Billable]= '" + billableTextTbx + "', [Status] = '3'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
+                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdTbx + "', [CategoryId] = '" + CategoryDescriptionTbx + "', [Status] = '3'   WHERE  [Id] = '" + hiddenIdText + "' ;\n";
 
                     connection.Open();
                     SqlCommand myCommand = new SqlCommand();
@@ -187,17 +156,20 @@ public partial class Page3 : System.Web.UI.Page
         {
             string sqlQuery = @"SELECT   
 [Id],
+[EmployeeName],
 [UserId],   
 [CloseDate], 
-[ChargeDate], 
-[Description], 
-[Description2],
+[ChargeDate], [Description], [Description2],
 [Amount], 
 [ClientId],
 [CategoryId],
-[Billable]
-FROM [DevData].[Expense].[Transactions]
-WHERE [Status] = 3";
+(SELECT Distinct Count(UserId) FROM [Expense].[Transactions] WHERE [UserId] = t.[UserId] AND [Status] = 2) as NumberOfTransactions,
+(SELECT [ClientName] 
+ FROM [Expense].[Clients] e 
+ WHERE t.ClientId = e.ClientId ) AS ClientName,
+(SELECT COALESCE('<div>' + CAST(p.Peachtree AS varchar(100)) + '</div>', '') FROM [Expense].[PeachtreeUser] p WHERE t.UserId = p.UserId FOR XML PATH('')) AS EmployeeId
+ FROM [DevData].[Expense].[Transactions] t 
+ WHERE [Status] = 2 Order By [UserId]";
             connection.Open();
             SqlCommand myCommand = new SqlCommand();
             myCommand.Connection = connection;
@@ -209,15 +181,22 @@ WHERE [Status] = 3";
             {
                 while (reader.Read())
                 {
-                    sb.Append(reader["UserId"].ToString() + ",");
-                    sb.Append(reader["CloseDate"].ToString() + ",");
-                    sb.Append(reader["ChargeDate"].ToString() + ",");
-                    sb.Append(reader["Description"].ToString() + ",");
-                    sb.Append(reader["Description2"].ToString() + ",");
+                    sb.Append(reader["EmployeeId"].ToString() + ",");
+                    sb.Append(invoiceNumber.Text + ",");
+                    sb.Append(transactionDate.Text + ",");
+                    sb.Append(dueDate.Text + ",");
+                    sb.Append(apAccountNumber.Text + ","); 
+                    sb.Append(reader["NumberOfTransactions"].ToString() + ",");
+
+                    sb.Append(reader["ChargeDate"].ToString() + "-");
+                    sb.Append(reader["ClientName"].ToString() + "-");
+                    sb.Append(reader["Description"].ToString() + ";");
+                    sb.Append(reader["Description2"].ToString() + ";");
+                    sb.Append(reader["EmployeeId"].ToString() + ",");
+
+                    sb.Append(reader["CategoryId"].ToString() + ",");
                     sb.Append(reader["Amount"].ToString() + ",");
                     sb.Append(reader["ClientId"].ToString() + ",");
-                    sb.Append(reader["CategoryId"].ToString() + ",");
-                    sb.Append(reader["Billable"].ToString() + ",");
                     sb.Append("\r\n");
                 }
                 Response.Output.Write(sb.ToString());
