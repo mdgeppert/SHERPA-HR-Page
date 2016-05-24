@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 public partial class Page4 : Page
 {
-    public string pcName = "'rogerb'";
+    public string pcName = "'clairet'";
 
     string sqlConnString = @"Data Source=Dev-Intranet;Initial Catalog=DevData;User ID=IntranetUser;Password=IntranetUser";
     private object ClientName;
@@ -42,7 +42,6 @@ public partial class Page4 : Page
 [Amount], 
 [ClientId],
 [CategoryId],
-[Billable],
 (SELECT [ClientName] 
 FROM [Expense].[Clients] e 
 WHERE t.ClientId = e.ClientId ) AS ClientName 
@@ -59,43 +58,7 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
             connection.Close();
         }
     }
-    protected void billableText(object sender, EventArgs e)
-    {
-        DropDownList ddl = (DropDownList)sender;
-        GridViewRow row = (GridViewRow)ddl.Parent.Parent;
-        TextBox continueTbxBillable = (TextBox)row.Cells[8].FindControl("continueTbxBillable");
-
-
-
-        using (SqlConnection connection = new SqlConnection(sqlConnString))
-        {
-            connection.Open();
-            string sqlQuery3 = @"SELECT [Billable] FROM [Expense].[Clients] WHERE [ClientId] = '" + ddl.SelectedValue + "'";
-
-            SqlCommand myCommand = new SqlCommand();
-            myCommand.Connection = connection;
-            myCommand.CommandText = sqlQuery3;
-            myCommand.CommandType = CommandType.Text;
-            myCommand.CommandTimeout = 60;
-            SqlDataReader myReader = myCommand.ExecuteReader();
-
-
-
-            if (myReader.HasRows)
-            {
-                while (myReader.Read())
-                {
-                    if (continueTbxBillable != null)
-                    {
-                        continueTbxBillable.Text = myReader["Billable"].ToString();
-                    }
-                }
-            }
-        }
-    }
-
-
-
+   
     public void ddlClientNameTbx(object sender, GridViewRowEventArgs e)
     {
 
@@ -181,8 +144,6 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
                 DropDownList categoryId = ((DropDownList)(row.Cells[7].FindControl("ddlCategoryDescriptionText")));
                 string categoryIdDdl = categoryId.SelectedValue.ToString();
 
-                TextBox continueTbxBillable = (TextBox)row.Cells[8].FindControl("continueTbxBillable");
-                string billableTextTbx = continueTbxBillable.Text;
 
                 HiddenField hiddenId = (HiddenField)row.Cells[6].FindControl("HiddenId");
                 string hiddenIdText = hiddenId.Value;
@@ -191,14 +152,10 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
                 string description2 = description2Text.Text;
 
 
-                //if (description2 != "" && clientIdDdl != "Please select" && categoryIdDdl != "Please select" && billableTextTbx != "")
-                //{
-
-
                 using (SqlConnection connection = new SqlConnection(sqlConnString))
                 {
 
-                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdDdl + "', [CategoryId] = '" + categoryIdDdl + "',   [Billable]= '" + billableTextTbx + "', [Status] = '1'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
+                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdDdl + "', [CategoryId] = '" + categoryIdDdl + "', [Status] = '1'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
 
                     connection.Open();
                     SqlCommand myCommand = new SqlCommand();
@@ -257,8 +214,6 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
                 DropDownList categoryId = ((DropDownList)(row.Cells[7].FindControl("ddlCategoryDescriptionText")));
                 string categoryIdDdl = categoryId.SelectedValue.ToString();
 
-                TextBox continueTbxBillable = (TextBox)row.Cells[8].FindControl("continueTbxBillable");
-                string billableTextTbx = continueTbxBillable.Text;
 
                 HiddenField hiddenId = (HiddenField)row.Cells[6].FindControl("HiddenId");
                 string hiddenIdText = hiddenId.Value;
@@ -271,7 +226,7 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
                 using (SqlConnection connection = new SqlConnection(sqlConnString))
                 {
 
-                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdDdl + "', [CategoryId] = '" + categoryIdDdl + "',   [Billable]= '" + billableTextTbx + "', [Status] = '2'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
+                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdDdl + "', [CategoryId] = '" + categoryIdDdl + "',  [Status] = '2'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
 
                     connection.Open();
                     SqlCommand myCommand = new SqlCommand();

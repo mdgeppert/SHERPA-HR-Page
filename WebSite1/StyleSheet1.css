@@ -197,21 +197,65 @@
 
 strong{color: red;}
 
+#doneMessage{
+    font-size: 22px;
+    font-weight: 800;
+}
+
+#doneMessage2{
+    font-size: 22px;
+    font-weight: 800;
+}
+
 #doneMessage3{
     font-size: 22px;
     font-weight: 800;
 }
 
 #toCsv{
-    margin-top: 4px;
-    height: 26px;
+    margin-top: 11px;
+    width: 100px;
+    height: 28px;
     background: #2F2FFF;
     color: #CCCCCC;
 }
 
-#completeSave{
+#saveChanges{
     height: 26px;
-    margin-top: -2px;
+    width: 100px;
+    margin-top: 12px;
     background: #2F2FFF;
     color: #CCCCCC;
+}
+
+#newBatch{
+    margin-left: 600px;
+    margin-top: 30px;
+    height: 250px;
+    width: 250px;
+    background: #2F2FFF;
+    color: #CCCCCC; 
+    font-size: 20px;
+    font-weight: 800;
+    border-radius: 30px;
+    border-color: transparent;
+}
+
+#oldBatch{
+    margin-left: 200px;
+    height: 250px;
+    width: 250px;
+    background: #2F2FFF;
+    color: #CCCCCC; 
+    font-size: 20px;
+    font-weight: 800;
+    overflow-wrap:normal;
+    border-radius: 30px;
+    border-color: transparent;
+}
+
+#amexTitle{
+    margin-left: 555px;
+    margin-top: 200px;
+    font-size: 48px;
 }

@@ -73,10 +73,13 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <asp:Button ID="toCsv" runat="server" OnClick="createCsv" Text="Create CSV"/>
+                                        <asp:Button ID="saveChanges" runat="server" OnClick="saveChanges_Click" Text="Update" Height="26px" Width="105px" />
+                                    </td>
+                                    <td>
+                                        <asp:Button ID="toCsv" runat="server" OnClick="createCsv" Text="Create CSV" AutoPostBack="true"/>
                                     </td>
                                     <td class="auto-style3">
-                                        <asp:Button ID="completeSave" OnClick="saveAndComplete" runat="server" Text="Save and Complete" />
+                                        <%--<asp:Button ID="completeSave" OnClick="saveAndComplete" runat="server" Text="Save and Complete" />--%>
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <asp:Label ID="doneMessage3" runat="server"></asp:Label>
                                     </td>
@@ -84,9 +87,6 @@
                             </table>
                         </div>
                     </div>
-                    
-
-
 
                     <asp:GridView ID="infoGridView" runat="server" Height="126px" AutoGenerateColumns="False" BackColor="White" BorderColor="#CCCCCC" Style="margin-bottom: 0px;" Width="95%" BorderStyle="None" CellPadding="10" BorderWidth="1px" GridLines="None" CssClass="auto-style5">
                         <AlternatingRowStyle BackColor="#CCD9FF" />
@@ -114,7 +114,7 @@
                                 <ItemTemplate>
                                     <asp:HiddenField ID="HiddenId" runat="server" Value='<%# Bind("Id") %>' />
                                     <asp:TextBox runat="server" ID="description2Text" AutoPostBack="true" Text='<%# Bind("Description2") %>' />
-                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ControlToValidate="description2Text" ErrorMessage="*" ForeColor="Red" Font-Size="XX-Large"></asp:RequiredFieldValidator>
+                                    <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ControlToValidate="description2Text" ErrorMessage="*" ForeColor="Red" Font-Size="XX-Large"></asp:RequiredFieldValidator>--%>
                                 </ItemTemplate>
                                 <ControlStyle Font-Bold="True" Font-Names="Arial" />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
@@ -124,7 +124,7 @@
                             <asp:TemplateField HeaderText="Client Code"><%--ClientName--%>
                                 <ItemTemplate>
                                     <asp:TextBox runat="server" ID="ClientNameTbx" AutoPostBack="true" Text='<%# Bind("ClientId") %>' />
-                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ControlToValidate="ClientNameTbx" ErrorMessage="*" ForeColor="Red" Font-Size="XX-Large"></asp:RequiredFieldValidator>
+                                    <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ControlToValidate="ClientNameTbx" ErrorMessage="*" ForeColor="Red" Font-Size="XX-Large"></asp:RequiredFieldValidator>--%>
                                 </ItemTemplate>
                                 <ControlStyle Font-Bold="True" Font-Names="Arial" />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
@@ -139,7 +139,7 @@
                             <asp:TemplateField HeaderText="Category Id"><%--Category Description--%>
                                 <ItemTemplate>
                                     <asp:TextBox runat="server" ID="CategoryDescriptionTbx" AutoPostBack="true" Text='<%# Bind("CategoryId") %>' />
-                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator7" runat="server" ControlToValidate="CategoryDescriptionTbx" ErrorMessage="*" ForeColor="Red" Font-Size="XX-Large"></asp:RequiredFieldValidator>
+                                    <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator7" runat="server" ControlToValidate="CategoryDescriptionTbx" ErrorMessage="*" ForeColor="Red" Font-Size="XX-Large"></asp:RequiredFieldValidator>--%>
                                 </ItemTemplate>
                                 <ControlStyle Font-Bold="True" Font-Names="Arial" />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />

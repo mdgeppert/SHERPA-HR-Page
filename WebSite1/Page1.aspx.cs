@@ -58,35 +58,6 @@ public partial class _Default : System.Web.UI.Page
             openFileDialog1.SaveAs(savePath);
             savePathHiddenField1.Value = savePath;
         }
-
-    }
-
-    public string GetUserId(string cardNumber)
-    {
-        string userId = "";
-        using (SqlConnection connection = new SqlConnection(sqlConnString))
-        {
-
-            string sqlQuery = @"SELECT UserId FROM [DevData].[Expense].[PeachtreeUser] where Card = '" + cardNumber + "'";
-            connection.Open();
-            SqlCommand myCommand = new SqlCommand();
-            myCommand.Connection = connection;
-            myCommand.CommandText = sqlQuery;
-            myCommand.CommandType = CommandType.Text;
-            myCommand.CommandTimeout = 60;
-            SqlDataReader reader = myCommand.ExecuteReader();
-            if (reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    userId = reader["UserId"].ToString();
-                }
-            }
-        }
-        return userId;
-    }
-    public void splitButton_Click(object sender, EventArgs e)
-    {
         string cardNumber = "";
         string user = "";
         string closeDate = "";
@@ -99,7 +70,7 @@ public partial class _Default : System.Web.UI.Page
         string rocID = "";
         string employeeName = "";
 
-        
+
 
         // int i = 0;
 
@@ -145,13 +116,13 @@ public partial class _Default : System.Web.UI.Page
             }
 
         }
-            populateView();
-        
+        populateView();
+
     }
-       protected void Page_Load(object sender, EventArgs e)
+    protected void Page_Load(object sender, EventArgs e)
     {
         populateView();
-        
+
     }
     private void populateView()
     {
@@ -166,15 +137,45 @@ public partial class _Default : System.Web.UI.Page
             myCommand.CommandTimeout = 60;
             infoGridView.DataSource = myCommand.ExecuteReader();
             infoGridView.DataBind();
-          
+
         }
     }
 
 
-
-    protected void infoGridView_SelectedIndexChanged(object sender, EventArgs e)
+    public string GetUserId(string cardNumber)
     {
+        string userId = "";
+        using (SqlConnection connection = new SqlConnection(sqlConnString))
+        {
 
+            string sqlQuery = @"SELECT UserId FROM [DevData].[Expense].[PeachtreeUser] where Card = '" + cardNumber + "'";
+            connection.Open();
+            SqlCommand myCommand = new SqlCommand();
+            myCommand.Connection = connection;
+            myCommand.CommandText = sqlQuery;
+            myCommand.CommandType = CommandType.Text;
+            myCommand.CommandTimeout = 60;
+            SqlDataReader reader = myCommand.ExecuteReader();
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    userId = reader["UserId"].ToString();
+                }
+            }
+        }
+        return userId;
     }
 }
+    //public void splitButton_Click(object sender, EventArgs e)
+    //{
+        
+
+
+
+//    protected void infoGridView_SelectedIndexChanged(object sender, EventArgs e)
+//    {
+
+//    }
+////}
 

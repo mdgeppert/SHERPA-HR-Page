@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Index.aspx.cs" Inherits="_Default" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Page1.aspx.cs" Inherits="_Default" %>
 
 <!DOCTYPE html>
 
@@ -13,9 +13,9 @@
             <div class="row">
                 <form id="browse" runat="server">
                     <asp:FileUpload ID="openFileDialog1" runat="server" Style="margin-left: 38.5%" Width="250px" button="40px" />
-                    <asp:Button ID="upload" runat="server" Text="Upload" OnClick="uploadButton_Click" Height="40px" margin-left="47%" Width="100px" Style="margin-top: 0px" />
-                    <asp:Button ID="split" runat="server" Text="Split" OnClick="splitButton_Click" Height="40px" margin-left="50%" Width="100px" Style="margin-left: 33px" />
-                    <asp:GridView ID="infoGridView" runat="server" Width="70%" Height="277px" Style="margin-left: 15%; margin-top: 25px;" BackColor="#F0F0F0" GridLines="None" OnSelectedIndexChanged="infoGridView_SelectedIndexChanged" AutoGenerateColumns="False" overflow="vertical" >
+                    <asp:Button ID="upload" runat="server" Text="Upload and Split" OnClick="uploadButton_Click" Height="40px" margin-left="47%" Width="124px" Style="margin-top: 0px" />
+                    <%--<asp:Button ID="split" runat="server" Text="Split" OnClick="splitButton_Click" Height="40px" margin-left="50%" Width="100px" Style="margin-left: 33px" />--%>
+                    <asp:GridView ID="infoGridView" runat="server" Width="70%" Height="277px" Style="margin-left: 15%; margin-top: 25px;" BackColor="#F0F0F0" GridLines="None"  AutoGenerateColumns="False" overflow="vertical" >
                         <AlternatingRowStyle ForeColor="Black" BackColor="#CCD9FF" />
                         <Columns>
                              <asp:ImageField>

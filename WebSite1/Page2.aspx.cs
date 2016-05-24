@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 public partial class Page2 : Page
 {
-    public string pcName = "'rogerb'";
+    public string pcName = "'clairet'";
 
     string sqlConnString = @"Data Source=Dev-Intranet;Initial Catalog=DevData;User ID=IntranetUser;Password=IntranetUser";
     private object ClientName;
@@ -41,8 +41,7 @@ public partial class Page2 : Page
 [Description2],
 [Amount], 
 [ClientId],
-[CategoryId],
-[Billable]
+[CategoryId]
 FROM [DevData].[Expense].[Transactions] 
 WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
             connection.Open();
@@ -56,50 +55,12 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
             connection.Close();
         }
     }
-    protected void billableText(object sender, EventArgs e)
-    {
-        DropDownList ddl = (DropDownList)sender;
-        GridViewRow row = (GridViewRow)ddl.Parent.Parent;
-        TextBox tbxBillable = (TextBox)row.Cells[8].FindControl("tbxBillable");
-
-
-
-        using (SqlConnection connection = new SqlConnection(sqlConnString))
-        {
-            connection.Open();
-            string sqlQuery3 = @"SELECT [Billable] FROM [Expense].[Clients] WHERE [ClientId] = '" + ddl.SelectedValue + "' ";
-
-            SqlCommand myCommand = new SqlCommand();
-            myCommand.Connection = connection;
-            myCommand.CommandText = sqlQuery3;
-            myCommand.CommandType = CommandType.Text;
-            myCommand.CommandTimeout = 60;
-            SqlDataReader myReader = myCommand.ExecuteReader();
-
-
-            if (myReader.HasRows)
-            {
-                while (myReader.Read())
-                {
-                    tbxBillable.Text = myReader["Billable"].ToString();
-                }
-            }
-        }
-    }
-
-
 
     public void ddlClientNameTbx(object sender, GridViewRowEventArgs e)
     {
-
-
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             DropDownList ddlClientName = (e.Row.FindControl("ddlClientNameText") as DropDownList);
-
-
-
-
             using (SqlConnection connection = new SqlConnection(sqlConnString))
             {
                 string sqlQuery1 = @"SELECT [ClientName], [ClientId]  FROM [Expense].[Clients]";
@@ -118,7 +79,6 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
                 ddlClientName.Items.Insert(0, new ListItem("Please select"));
 
                 DropDownList ddlCategoryDescription = (e.Row.FindControl("ddlCategoryDescriptionText") as DropDownList);
-
                 string sqlQuery2 = @"SELECT [CategoryDescription], [CategoryId] FROM [Expense].[Category]";
                 myCommand = new SqlCommand();
                 myCommand.Connection = connection;
@@ -127,84 +87,52 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
                 myCommand.CommandTimeout = 60;
                 myReader = myCommand.ExecuteReader();
                 ddlCategoryDescription.DataSource = myReader;
-
                 ddlCategoryDescription.DataTextField = "CategoryDescription";
                 ddlCategoryDescription.DataValueField = "CategoryId";
                 ddlCategoryDescription.DataBind();
-
                 ddlCategoryDescription.Items.Insert(0, new ListItem("Please select"));
             }
         }
     }
-
-    
     protected void saveButton_Click(object sender, EventArgs e)
     {
+        
         try
         {
             string query = "";
-
             for (int i = 0; i < infoGridView.Rows.Count; i++)
             {
-
                 GridViewRow row = infoGridView.Rows[i];
-
-
-
                 DropDownList clientId = ((DropDownList)(row.Cells[6].FindControl("ddlClientNameText")));
                 string clientIdDdl = clientId.SelectedValue.ToString();
-
-
-
                 DropDownList categoryId = ((DropDownList)(row.Cells[7].FindControl("ddlCategoryDescriptionText")));
                 string categoryIdDdl = categoryId.SelectedValue.ToString();
-
-                TextBox billableText = (TextBox)row.Cells[8].FindControl("tbxBillable");
-                string billableTextTbx = billableText.Text;
-
                 HiddenField hiddenId = (HiddenField)row.Cells[6].FindControl("HiddenId");
                 string hiddenIdText = hiddenId.Value;
-
                 TextBox description2Text = (TextBox)row.Cells[4].FindControl("description2Text");
                 string description2 = description2Text.Text;
 
+                using (SqlConnection connection = new SqlConnection(sqlConnString))
+                {
 
-                //if (description2 != "" && clientIdDdl != "Please select" && categoryIdDdl != "Please select" && billableTextTbx != "")
-                //{
-
-
-                    using (SqlConnection connection = new SqlConnection(sqlConnString))
-                    {
-
-                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdDdl + "', [CategoryId] = '" + categoryIdDdl + "',   [Billable]= '" + billableTextTbx + "', [Status] = '1'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
+                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdDdl + "', [CategoryId] = '" + categoryIdDdl + "', [Status] = '1'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
 
                     connection.Open();
-                        SqlCommand myCommand = new SqlCommand();
-                        myCommand.Connection = connection;
-                        myCommand.CommandText = queryUpdate;
-                        myCommand.CommandTimeout = 60;
-                        myCommand.ExecuteNonQuery();
-                    }
+                    SqlCommand myCommand = new SqlCommand();
+                    myCommand.Connection = connection;
+                    myCommand.CommandText = queryUpdate;
+                    myCommand.CommandTimeout = 60;
+                    myCommand.ExecuteNonQuery();
+                }
 
-                    doneMessage.Text = "Save complete.";
-
-
-                //}
+                doneMessage.Text = "Save complete.";
 
 
-                //else
-                //{
-                //    break;
-                //}
             }
         }
         catch (Exception ex)
         {
-
-
             //SendErrorEmail1(ex.ToString(), "AMEX - saveButton_Click", pcName);
-
-
             doneMessage.Text = "Partial save complete!";
         }
     }
@@ -222,13 +150,19 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
             message.IsBodyHtml = true;
             SmtpClient client = new SmtpClient();
             client.Send(message);
-
         }
         catch (Exception ex)
         {
             throw ex;
         }
     }
+
+    //protected void validation(object sender, EventArgs e)
+    //{
+    //    if (description2Text == "Please select") { 
+    //}
+
+
 
     protected void submitButton_Click(object sender, EventArgs e)
     {
@@ -243,15 +177,8 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
 
                 DropDownList clientId = ((DropDownList)(row.Cells[6].FindControl("ddlClientNameText")));
                 string clientIdDdl = clientId.SelectedValue.ToString();
-
-
-
                 DropDownList categoryId = ((DropDownList)(row.Cells[7].FindControl("ddlCategoryDescriptionText")));
                 string categoryIdDdl = categoryId.SelectedValue.ToString();
-
-                TextBox billableText = (TextBox)row.Cells[8].FindControl("tbxBillable");
-                string billableTextTbx = billableText.Text;
-
                 HiddenField hiddenId = (HiddenField)row.Cells[6].FindControl("HiddenId");
                 string hiddenIdText = hiddenId.Value;
 
@@ -262,7 +189,7 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
                 using (SqlConnection connection = new SqlConnection(sqlConnString))
                 {
 
-                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdDdl + "', [CategoryId] = '" + categoryIdDdl + "',   [Billable]= '" + billableTextTbx + "', [Status] = '2'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
+                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdDdl + "', [CategoryId] = '" + categoryIdDdl + "', [Status] = '2'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
 
                     connection.Open();
                     SqlCommand myCommand = new SqlCommand();

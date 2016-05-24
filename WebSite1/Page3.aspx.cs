@@ -52,6 +52,47 @@ public partial class Page3 : System.Web.UI.Page
             connection.Close();
         }
     }
+
+    protected void saveChanges_Click(object sender, EventArgs e)
+    {
+        string pcName = "";
+        pcName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+        pcName = pcName.Substring(pcName.IndexOf(@"\") + 1).ToLower();
+        try
+        {
+            string query = "";
+            for (int i = 0; i < infoGridView.Rows.Count; i++)
+            {
+                GridViewRow row = infoGridView.Rows[i];
+                TextBox clientId = ((TextBox)(row.Cells[6].FindControl("ClientNameTbx")));
+                string clientIdTbx = clientId.Text.ToString();
+                TextBox categoryId = ((TextBox)(row.Cells[7].FindControl("CategoryDescriptionTbx")));
+                string CategoryDescriptionTbx = categoryId.Text.ToString();
+                HiddenField hiddenId = (HiddenField)row.Cells[6].FindControl("HiddenId");
+                string hiddenIdText = hiddenId.Value;
+                TextBox description2Text = (TextBox)row.Cells[4].FindControl("description2Text");
+                string description2 = description2Text.Text;
+
+                using (SqlConnection connection = new SqlConnection(sqlConnString))
+                {
+                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdTbx + "', [CategoryId] = '" + CategoryDescriptionTbx + "' , [Status] =  3  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
+                    connection.Open();
+                    SqlCommand myCommand = new SqlCommand();
+                    myCommand.Connection = connection;
+                    myCommand.CommandText = queryUpdate;
+                    myCommand.CommandTimeout = 60;
+                    myCommand.ExecuteNonQuery();
+                }
+                doneMessage3.Text = "Save complete.";
+            }
+        }
+        catch (Exception ex)
+        {
+            SendErrorEmail(ex.ToString(), "AMEX - saveButton_Click", pcName);
+            doneMessage3.Text = "Entries not saved!";
+        }
+    }
+
     protected void createCsv(object sender, EventArgs e)
     {
         StringBuilder sb = new StringBuilder();
@@ -67,13 +108,13 @@ public partial class Page3 : System.Web.UI.Page
 [Amount], 
 [ClientId],
 [CategoryId],
-(SELECT Distinct Count(UserId) FROM [Expense].[Transactions] WHERE [UserId] = t.[UserId] AND [Status] = 2) as NumberOfTransactions,
+(SELECT Distinct Count(UserId) FROM [Expense].[Transactions] WHERE [UserId] = t.[UserId] AND [Status] = 3) as NumberOfTransactions,
 (SELECT [ClientName] 
  FROM [Expense].[Clients] e 
  WHERE t.ClientId = e.ClientId ) AS ClientName,
 (SELECT COALESCE(CAST(p.Peachtree AS varchar(100)), '') FROM [Expense].[PeachtreeUser] p WHERE t.UserId = p.UserId FOR XML PATH('')) AS EmployeeId
  FROM [DevData].[Expense].[Transactions] t 
- WHERE [Status] = 2 Order By [UserId]";
+ WHERE [Status] = 3 Order By [UserId]";
             connection.Open();
             SqlCommand myCommand = new SqlCommand();
             myCommand.Connection = connection;
@@ -119,53 +160,40 @@ public partial class Page3 : System.Web.UI.Page
                 Response.Buffer = true;
                 Response.AddHeader("content-disposition",
                  "attachment;filename=amexExpenseData" + DateTime.Now + ".csv");
-
                 Response.Charset = "";
                 Response.ContentType = "application/text";
+                string pcName = "";
+                pcName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+                pcName = pcName.Substring(pcName.IndexOf(@"\") + 1).ToLower();
+
+                try
+                {
+                    string query = "";
+                    using (SqlConnection connection2 = new SqlConnection(sqlConnString))
+                    {
+                        string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Status] = '4'  WHERE  [Status] = 3";
+                        connection2.Open();
+                        SqlCommand myCommand2 = new SqlCommand();
+                        myCommand2.Connection = connection2;
+                        myCommand2.CommandText = queryUpdate;
+                        myCommand2.CommandTimeout = 60;
+                        myCommand2.ExecuteNonQuery();
+                    }
+                    doneMessage3.Text = "Process complete.";
+
+                }
+
+                catch (Exception ex)
+                {
+                    SendErrorEmail(ex.ToString(), "AMEX - saveButton_Click", pcName);
+                    doneMessage3.Text = "Entries not saved!";
+                }
                 Response.End();
                 Response.Flush();
             }
         }
     }
-    protected void saveAndComplete(object sender, EventArgs e)
-    {
-        string pcName = "";
-        pcName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-        pcName = pcName.Substring(pcName.IndexOf(@"\") + 1).ToLower();
-        try
-        {
-            string query = "";
-            for (int i = 0; i < infoGridView.Rows.Count; i++)
-            {
-                GridViewRow row = infoGridView.Rows[i];
-                TextBox clientId = ((TextBox)(row.Cells[6].FindControl("ClientNameTbx")));
-                string clientIdTbx = clientId.Text.ToString();
-                TextBox categoryId = ((TextBox)(row.Cells[7].FindControl("CategoryDescriptionTbx")));
-                string CategoryDescriptionTbx = categoryId.Text.ToString();
-                HiddenField hiddenId = (HiddenField)row.Cells[6].FindControl("HiddenId");
-                string hiddenIdText = hiddenId.Value;
-                TextBox description2Text = (TextBox)row.Cells[4].FindControl("description2Text");
-                string description2 = description2Text.Text;
 
-                using (SqlConnection connection = new SqlConnection(sqlConnString))
-                {
-                    string queryUpdate = query + "UPDATE [Expense].[Transactions] SET [Description2] = '" + description2 + "' , [ClientId] = '" + clientIdTbx + "', [CategoryId] = '" + CategoryDescriptionTbx + "', [Status] = '3'  WHERE  [Id] = '" + hiddenIdText + "' ;\n";
-                    connection.Open();
-                    SqlCommand myCommand = new SqlCommand();
-                    myCommand.Connection = connection;
-                    myCommand.CommandText = queryUpdate;
-                    myCommand.CommandTimeout = 60;
-                    myCommand.ExecuteNonQuery();
-                }
-                doneMessage3.Text = "Process complete.";
-            }
-        }
-        catch (Exception ex)
-        {
-            SendErrorEmail(ex.ToString(), "AMEX - saveButton_Click", pcName);
-            doneMessage3.Text = "Entries not saved!";
-        }
-    }
     public static void SendErrorEmail(string bodyText, string emailSubject, string pcName)
     {
         string to = "mgeppert@ssgstl.com";
@@ -185,5 +213,3 @@ public partial class Page3 : System.Web.UI.Page
         }
     }
 }
-
-
