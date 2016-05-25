@@ -5,25 +5,38 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
-    <link rel="stylesheet" type="text/css" href="StyleSheet1.css" />
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/angular-1.3.15.min.js"></script>
+    <script src="/js/bootstrap3.3.6/bootstrap.min.js"></script>
+    <script src="/js/ui-bootstrap-tpls-0.13.0.min.js"></script>
+    <script src="/js/moment.min.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
+    <script src="js/JavaScript.js"></script>
+    <link href="css/HR_1.css" rel="stylesheet" />
+    >
+    <link rel="stylesheet" type="text/css" href="css/StyleSheet1.css" />
     <style type="text/css">
         .row {
             height: 115px;
             width: 1824px;
         }
+
         .auto-style2 {
             left: 3%;
             top: 3%;
             height: 192px;
         }
+
         .auto-style3 {
             height: 27px;
         }
+
         .auto-style4 {
             height: 115px;
             width: 1824px;
             margin-left: 47px;
         }
+
         .auto-style5 {
             margin-left: 3px;
             margin-top: 46px;
@@ -76,7 +89,7 @@
                                         <asp:Button ID="saveChanges" runat="server" OnClick="saveChanges_Click" Text="Update" Height="26px" Width="105px" />
                                     </td>
                                     <td>
-                                        <asp:Button ID="toCsv" runat="server" OnClick="createCsv" Text="Create CSV" AutoPostBack="true"/>
+                                        <asp:Button ID="toCsv" runat="server" OnClick="createCsv" Text="Create CSV" AutoPostBack="true" />
                                     </td>
                                     <td class="auto-style3">
                                         <%--<asp:Button ID="completeSave" OnClick="saveAndComplete" runat="server" Text="Save and Complete" />--%>

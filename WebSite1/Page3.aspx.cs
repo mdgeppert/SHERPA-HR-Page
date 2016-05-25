@@ -140,7 +140,7 @@ public partial class Page3 : System.Web.UI.Page
                 {
                     sb.Append(reader["EmployeeId"].ToString() + ",");
                     sb.Append(invoiceNumber.Text + ",");
-                    sb.Append(transactionDate.Text + ",");
+                    sb.Append(transactionDate + ",");
                     sb.Append(dueDate.Text + ",");
                     sb.Append(apAccountNumber.Text + ",");
                     sb.Append(reader["NumberOfTransactions"].ToString() + ",");
