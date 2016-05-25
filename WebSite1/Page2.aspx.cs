@@ -10,8 +10,6 @@ public partial class Page2 : Page
     public string pcName = "'clairet'";
 
     string sqlConnString = @"Data Source=Dev-Intranet;Initial Catalog=DevData;User ID=IntranetUser;Password=IntranetUser";
-    private object ClientName;
-    private object input;
 
     public void Page_Load(object sender, EventArgs e)
     {
@@ -28,6 +26,7 @@ public partial class Page2 : Page
 
     public void populateView()
     {
+
         using (SqlConnection connection = new SqlConnection(sqlConnString))
 
         {
@@ -58,9 +57,15 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
 
     public void ddlClientNameTbx(object sender, GridViewRowEventArgs e)
     {
+
+
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             DropDownList ddlClientName = (e.Row.FindControl("ddlClientNameText") as DropDownList);
+
+
+
+
             using (SqlConnection connection = new SqlConnection(sqlConnString))
             {
                 string sqlQuery1 = @"SELECT [ClientName], [ClientId]  FROM [Expense].[Clients]";
@@ -78,7 +83,16 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
                 myReader.Close();
                 ddlClientName.Items.Insert(0, new ListItem("Please select"));
 
+                HiddenField ddlClientNameTextHidden = e.Row.FindControl("ddlClientNameTextHidden") as HiddenField;
+                DropDownList ddlClientNameText = e.Row.FindControl("ddlClientNameText") as DropDownList;
+                if (ddlClientNameText != null)
+                {
+                    ddlClientNameText.SelectedValue = ddlClientNameTextHidden.Value;
+                }
+
+
                 DropDownList ddlCategoryDescription = (e.Row.FindControl("ddlCategoryDescriptionText") as DropDownList);
+
                 string sqlQuery2 = @"SELECT [CategoryDescription], [CategoryId] FROM [Expense].[Category]";
                 myCommand = new SqlCommand();
                 myCommand.Connection = connection;
@@ -87,10 +101,19 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
                 myCommand.CommandTimeout = 60;
                 myReader = myCommand.ExecuteReader();
                 ddlCategoryDescription.DataSource = myReader;
+
                 ddlCategoryDescription.DataTextField = "CategoryDescription";
                 ddlCategoryDescription.DataValueField = "CategoryId";
                 ddlCategoryDescription.DataBind();
-                ddlCategoryDescription.Items.Insert(0, new ListItem("Please select"));
+
+                HiddenField ddlCategoryDescriptionHidden = e.Row.FindControl("ddlCategoryDescriptionHidden") as HiddenField;
+                DropDownList ddlCategoryDescriptonText = e.Row.FindControl("ddlCategoryDescriptionText") as DropDownList;
+                if (ddlCategoryDescriptonText != null)
+                {
+                    ddlCategoryDescriptonText.SelectedValue = ddlCategoryDescriptionHidden.Value;
+                }
+
+                ddlCategoryDescriptonText.Items.Insert(0, new ListItem("Please select"));
             }
         }
     }
@@ -130,7 +153,7 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
 
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             //SendErrorEmail1(ex.ToString(), "AMEX - saveButton_Click", pcName);
             doneMessage.Text = "Partial save complete!";

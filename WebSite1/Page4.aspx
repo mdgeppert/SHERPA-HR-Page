@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
-    <link rel="stylesheet" type="text/css" href="StyleSheet1.css" />
+    <link rel="stylesheet" type="text/css" href="css/StyleSheet1.css" />
     <style type="text/css">
         .row {
             height: 661px;
@@ -34,7 +34,7 @@
                     <asp:Button ID="submitButton2" runat="server" OnClick="continuedSubmitButton_Click" Text="Submit" AutoPostBack="true" Height="26px" Width="64px" />
                     <asp:Label ID="doneMessage2"  runat="server"  />
                     <asp:Label ID="incompleteMessage1" runat="server" />
-                    <asp:GridView ID="infoGridView5" runat="server" Height="50px" AutoGenerateColumns="False" OnRowDataBound="ddlClientNameTbx" BackColor="White" BorderColor="#CCCCCC" Style="margin-top: 85px; margin-bottom: 0px;" Width="97%" BorderStyle="None" CellPadding="10" BorderWidth="1px" GridLines="None" CssClass="auto-style1">
+                    <asp:GridView ID="infoGridView5" runat="server" Height="50px" AutoGenerateColumns="False" OnRowDataBound="ddlClientNameTbx" ShowHeaderWhenEmpty="true" BackColor="White" BorderColor="#CCCCCC" Style="margin-top: 85px; margin-bottom: 0px;" Width="97%" BorderStyle="None" CellPadding="10" BorderWidth="1px" GridLines="None" CssClass="auto-style1">
                         <AlternatingRowStyle BackColor="#CCD9FF" />
                         <Columns>
                             <asp:BoundField DataField="EmployeeName" HeaderText="Employee Name" ReadOnly="True"><%--Employee Name--%>
@@ -90,8 +90,8 @@
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Right" />
                                 <ItemStyle Font-Names="Arial" Font-Bold HorizontalAlign="Right" Wrap="False" />
                             </asp:BoundField>
-
                         </Columns>
+                         <EmptyDataTemplate>No Record Available</EmptyDataTemplate>
                         <FooterStyle BackColor="White" ForeColor="#000066" />
                         <HeaderStyle BackColor="#668CFF" Font-Bold="False" ForeColor="Black" Font-Names="Arial Black" Height="60px" />
                         <PagerStyle BackColor="White" ForeColor="#000066" HorizontalAlign="Left" />

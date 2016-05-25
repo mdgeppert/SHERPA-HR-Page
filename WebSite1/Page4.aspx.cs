@@ -10,8 +10,6 @@ public partial class Page4 : Page
     public string pcName = "'clairet'";
 
     string sqlConnString = @"Data Source=Dev-Intranet;Initial Catalog=DevData;User ID=IntranetUser;Password=IntranetUser";
-    private object ClientName;
-    private object input;
 
     public void Page_Load(object sender, EventArgs e)
     {
@@ -168,7 +166,7 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
                 doneMessage2.Text = "Save complete.";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             doneMessage2.Text = "Saved, but batch not complete!";
         }
@@ -240,7 +238,7 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
                 }
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
 
             doneMessage2.Text = " All items must be complete in order to submit!";

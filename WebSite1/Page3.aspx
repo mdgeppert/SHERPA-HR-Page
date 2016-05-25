@@ -101,27 +101,28 @@
                         </div>
                     </div>
 
-                    <asp:GridView ID="infoGridView" runat="server" Height="126px" AutoGenerateColumns="False" BackColor="White" BorderColor="#CCCCCC" Style="margin-bottom: 0px;" Width="95%" BorderStyle="None" CellPadding="10" BorderWidth="1px" GridLines="None" CssClass="auto-style5">
+                    <asp:GridView ID="infoGridView" runat="server" Height="126px" AutoGenerateColumns="False" ShowHeaderWhenEmpty="True" BackColor="White" BorderColor="#CCCCCC" Style="margin-bottom: 0px;" Width="95%" BorderStyle="None" CellPadding="10" BorderWidth="1px" GridLines="None" CssClass="auto-style5">
                         <AlternatingRowStyle BackColor="#CCD9FF" />
                         <Columns>
 
                             <asp:BoundField DataField="UserId" HeaderText="User Id" ReadOnly="True"><%--Employee Name--%>
                                 <ControlStyle Font-Names="Arial" Font-Bold />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" CssClass="color: orange;" HorizontalAlign="Left" />
-                                <ItemStyle Wrap="False" Font-Names="Arial" Font-Bold />
+                                <ItemStyle Wrap="False" Font-Names="Arial" Font-Bold Font-Size="10px" />
                             </asp:BoundField>
                             <asp:BoundField DataField="CloseDate" HeaderText="Close Date" ReadOnly="True" DataFormatString="{0:MM/dd/yyyy}"><%--Close Date--%>
                                 <ControlStyle Font-Names="Arial" Font-Bold />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
-                                <ItemStyle Wrap="False" Font-Names="Arial" Font-Bold />
+                                <ItemStyle Wrap="False" Font-Names="Arial" Font-Bold Font-Size="10px" />
                             </asp:BoundField>
                             <asp:BoundField DataField="ChargeDate" HeaderText="Charge Date" ReadOnly="True" DataFormatString="{0:MM/dd/yyyy}"><%--Charge Date--%>
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
-                                <ItemStyle Font-Names="Arial" Font-Bold Wrap="False" />
+                                <ItemStyle Font-Names="Arial" Font-Bold Wrap="False" Font-Size="10px" />
                             </asp:BoundField>
                             <asp:BoundField DataField="Description" HeaderText="Description"><%--Description--%>
+                                <ControlStyle Width="300px" />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
-                                <ItemStyle Font-Names="Arial" Font-Bold Width="200px" Wrap="False" />
+                                <ItemStyle Font-Names="Arial" Font-Bold Width="200px" Wrap="False" Font-Size="10px" />
                             </asp:BoundField>
                             <asp:TemplateField HeaderText="Description 2">
                                 <ItemTemplate>
@@ -129,15 +130,16 @@
                                     <asp:TextBox runat="server" ID="description2Text" AutoPostBack="true" Text='<%# Bind("Description2") %>' />
                                     <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ControlToValidate="description2Text" ErrorMessage="*" ForeColor="Red" Font-Size="XX-Large"></asp:RequiredFieldValidator>--%>
                                 </ItemTemplate>
-                                <ControlStyle Font-Bold="True" Font-Names="Arial" />
+                                <ControlStyle Font-Bold="True" Font-Names="Arial" Width="300px" />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
-                                <ItemStyle Font-Bold="True" Font-Names="Arial" Wrap="False" />
+                                <ItemStyle Font-Bold="True" Font-Names="Arial" Wrap="False" Font-Size="10px" />
                             </asp:TemplateField>
 
-                            <asp:TemplateField HeaderText="Client Code"><%--ClientName--%>
+                            <asp:TemplateField HeaderText="Client Name"><%--ClientName--%>
                                 <ItemTemplate>
-                                    <asp:TextBox runat="server" ID="ClientNameTbx" AutoPostBack="true" Text='<%# Bind("ClientId") %>' />
-                                    <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ControlToValidate="ClientNameTbx" ErrorMessage="*" ForeColor="Red" Font-Size="XX-Large"></asp:RequiredFieldValidator>--%>
+                                    <asp:HiddenField Id="ddlClientNameTextHidden" Value='<%# Bind("ClientId") %>' runat="server"></asp:HiddenField>
+                                    <asp:DropDownList ID="ddlClientNameText" runat="server" AutoPostBack="true"  AppendDataBoundItems="true"></asp:DropDownList>
+                                    <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="ddlClientNameText" ErrorMessage="*" ForeColor="Red" InitialValue="Please select" Font-Size="XX-Large"></asp:RequiredFieldValidator>--%>
                                 </ItemTemplate>
                                 <ControlStyle Font-Bold="True" Font-Names="Arial" />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
@@ -149,10 +151,10 @@
                                 <HeaderStyle HorizontalAlign="Left" />
                             </asp:CheckBoxField>
 
-                            <asp:TemplateField HeaderText="Category Id"><%--Category Description--%>
+                             <asp:TemplateField HeaderText="Category Description"><%--Category Description--%>
                                 <ItemTemplate>
-                                    <asp:TextBox runat="server" ID="CategoryDescriptionTbx" AutoPostBack="true" Text='<%# Bind("CategoryId") %>' />
-                                    <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator7" runat="server" ControlToValidate="CategoryDescriptionTbx" ErrorMessage="*" ForeColor="Red" Font-Size="XX-Large"></asp:RequiredFieldValidator>--%>
+                                    <asp:HiddenField Id="ddlCategoryDescriptionHidden" Value='<%# Bind("CategoryId") %>' runat="server"></asp:HiddenField>
+                                    <asp:DropDownList ID="ddlCategoryDescriptionText" runat="server"  AutoPostBack="true"  AppendDataBoundItems="true"></asp:DropDownList>
                                 </ItemTemplate>
                                 <ControlStyle Font-Bold="True" Font-Names="Arial" />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
@@ -165,12 +167,12 @@
                             </asp:CheckBoxField>
                             <asp:BoundField DataField="Amount" HeaderText="Amount" ReadOnly="True" HtmlEncode="false" DataFormatString="$ {0:###,###,###.00}"><%--Amount--%>
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Right" />
-                                <ItemStyle Font-Names="Arial" Font-Bold HorizontalAlign="Right" Wrap="False" />
+                                <ItemStyle Font-Names="Arial" Font-Bold HorizontalAlign="Right" Wrap="False" Font-Size="10px" />
                             </asp:BoundField>
 
                             <asp:CheckBoxField />
                         </Columns>
-
+                         <EmptyDataTemplate>No Record Available</EmptyDataTemplate>
                         <FooterStyle BackColor="White" ForeColor="#000066" />
                         <HeaderStyle BackColor="#668CFF" Font-Bold="False" ForeColor="Black" Font-Names="Arial Black" Height="60px" />
                         <PagerStyle BackColor="White" ForeColor="#000066" HorizontalAlign="Left" />

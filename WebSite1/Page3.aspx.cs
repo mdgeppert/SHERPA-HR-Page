@@ -9,8 +9,6 @@ using System.Web.UI.WebControls;
 public partial class Page3 : System.Web.UI.Page
 {
     string sqlConnString = @"Data Source=Dev-Intranet;Initial Catalog=DevData;User ID=IntranetUser;Password=IntranetUser";
-    private object ClientName;
-    private object input;
 
     public void Page_Load(object sender, EventArgs e)
     {
