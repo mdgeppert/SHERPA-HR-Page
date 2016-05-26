@@ -2,15 +2,9 @@
     background: #d9d9d9;
 }
 
-/*#split{
-    width: 100px;
-    height: 40px;
-    left: 1221px;
-    position: absolute;
-    font-size: .7vw;
-    top: 0px;
-    margin-bottom: 0px;
-}*/
+#infoGridView{
+ Height: 50px;  margin-top: 25px;  background: #F0F0F0;   Border:1px solid #CCCCCC;  margin-bottom: 0px; Width: 97%; 
+}
 
 .ISButton {
     height: 5vh;
@@ -36,13 +30,37 @@
     font-size: .75vw;
     top: 12px;
 }
+#openFileDialog1{
+    margin-left: -808px;
+}
 
+#currentTransactionsFor{
+    margin-left: 450px;
+    font-size: 36px;
+    font-family: Arial;
+}
 
-/*#upload{
-    margin-left: 192px;
-    margin-top: 0px;
-    margin-right: 0px;
-}*/
+.revisited{
+    font-family: Arial;
+    font-size: 12px;
+    margin-top: -15px;
+    margin-left: 740px;
+}
+
+#rawData{
+    font-family: Arial;
+    font-size: 36px;
+    font-weight:600;
+    margin-top: -50px;
+}
+
+#uploadButton{
+    margin-left: -810px;
+    width: 120px;
+    height: 40px;
+    background: #2F2FFF;
+    color: #CCCCCC;
+}
 
 #importFile {
     top: 4.25vh;
@@ -137,31 +155,28 @@
     position: absolute;
 }
 
-#saveButton {
-    top: -1px;
-    height: 4vh;
-    width: 4vw;
-    position: absolute;
-    left: 42%;
-    right: 1009px;
+#button1 {
+    margin-left: 0;
+    width: 100px;
+    height: 40px;
+    background: #2F2FFF;
+    color: #CCCCCC;
+    border-radius: 10px;
 }
 
-#submitButton {
-    top: 0;
-    left: 700%;
-    height: 4vh;
-    width: 4vw;
-    position: absolute;
+#button2 {
+    margin-left: 0;
+    width: 100px;
+    height: 40px;
+    background: #2F2FFF;
+    color: #CCCCCC;
+    border-radius: 10px;
 }
 
-.saveButton1 {
-    top: -1px;
-    height: 4vh;
-    width: 4vw;
-    position: absolute;
-    left: 42%;
-    right: 1009px;
-    background: magenta;
+#submitButton2 {
+    margin-left: 0;
+    background: #2F2FFF;
+    color: #CCCCCC;
 }
 
 .types {
@@ -191,36 +206,37 @@
     margin-top: 20px;
     position: absolute;
 }
- #tbxBillable{
-     width: 200px;
- }
 
-strong{color: red;}
+#tbxBillable {
+    width: 200px;
+}
 
-#doneMessage{
+strong {
+    color: red;
+}
+
+#doneMessage {
     font-size: 22px;
     font-weight: 800;
 }
 
-#doneMessage2{
+#doneMessage2 {
     font-size: 22px;
     font-weight: 800;
 }
 
-#doneMessage3{
+#doneMessage3 {
     font-size: 22px;
     font-weight: 800;
 }
 
-#toCsv{
-    margin-top: 11px;
-    width: 100px;
-    height: 28px;
+#toCsv {
+    margin-top: -8px;
     background: #2F2FFF;
     color: #CCCCCC;
 }
 
-#saveChanges{
+#updateChanges {
     height: 26px;
     width: 100px;
     margin-top: 12px;
@@ -228,35 +244,38 @@ strong{color: red;}
     color: #CCCCCC;
 }
 
-#newBatch{
+#newBatch {
     margin-left: 600px;
     margin-top: 30px;
     height: 250px;
     width: 250px;
     background: #2F2FFF;
-    color: #CCCCCC; 
+    color: #CCCCCC;
     font-size: 20px;
     font-weight: 800;
     border-radius: 30px;
     border-color: transparent;
 }
 
-#oldBatch{
+#oldBatch {
     margin-left: 200px;
     height: 250px;
     width: 250px;
     background: #2F2FFF;
-    color: #CCCCCC; 
+    color: #CCCCCC;
     font-size: 20px;
     font-weight: 800;
-    overflow-wrap:normal;
+    overflow-wrap: normal;
     border-radius: 30px;
     border-color: transparent;
 }
 
-#amexTitle{
+#amexTitle {
     margin-left: 555px;
     margin-top: 200px;
     font-size: 48px;
 }
 
+#page1Table {
+    margin-left: 45%;
+}

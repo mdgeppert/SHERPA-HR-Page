@@ -5,174 +5,130 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/angular-1.3.15.min.js"></script>
-    <script src="/js/bootstrap3.3.6/bootstrap.min.js"></script>
-    <script src="/js/ui-bootstrap-tpls-0.13.0.min.js"></script>
-    <script src="/js/moment.min.js"></script>
-    <script src="/ckeditor/ckeditor.js"></script>
-    <script src="js/JavaScript.js"></script>
-    <link href="css/HR_1.css" rel="stylesheet" />
-    >
-    <link rel="stylesheet" type="text/css" href="css/StyleSheet1.css" />
+    <link rel="stylesheet" type="text/css" href="/css/StyleSheet1.css" />
     <style type="text/css">
-        .row {
-            height: 115px;
-            width: 1824px;
-        }
-
         .auto-style2 {
-            left: 3%;
-            top: 3%;
-            height: 192px;
+            height: 41px;
         }
-
         .auto-style3 {
-            height: 27px;
+            margin-top: 0px;
         }
-
         .auto-style4 {
-            height: 115px;
-            width: 1824px;
-            margin-left: 47px;
-        }
-
-        .auto-style5 {
-            margin-left: 3px;
-            margin-top: 46px;
+            height: 22px;
         }
     </style>
 </head>
-<body>
+<body style="width: 1727px">
     <div class="container">
-
-        <div class="col-md-12">
-            <div class="auto-style4">
-                <form id="display" runat="server" class="auto-style2">
-                    <div class="row">
-                        <div class="col-md-2" display="inline">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <div id="invoiceNumberLabel">Invoice Number:</div>
-                                    </td>
-                                    <td>
-                                        <asp:TextBox ID="invoiceNumber" runat="server"></asp:TextBox>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div id="transactionDateLabel">Transaction Date:</div>
-                                    </td>
-                                    <td>
-                                        <asp:TextBox ID="transactionDate" runat="server"></asp:TextBox>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div id="dueDateLabel">Due Date:</div>
-                                    </td>
-                                    <td>
-                                        <asp:TextBox ID="dueDate" runat="server"></asp:TextBox>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div id="apAccountNumberLabel">A/P Account Number:</div>
-                                    </td>
-                                    <td>
-                                        <asp:TextBox ID="apAccountNumber" runat="server"></asp:TextBox>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <asp:Button ID="saveChanges" runat="server" OnClick="saveChanges_Click" Text="Update" Height="26px" Width="105px" />
-                                    </td>
-                                    <td>
-                                        <asp:Button ID="toCsv" runat="server" OnClick="createCsv" Text="Create CSV" AutoPostBack="true" />
-                                    </td>
-                                    <td class="auto-style3">
-                                        <%--<asp:Button ID="completeSave" OnClick="saveAndComplete" runat="server" Text="Save and Complete" />--%>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <asp:Label ID="doneMessage3" runat="server"></asp:Label>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-
-                    <asp:GridView ID="infoGridView" runat="server" Height="126px" AutoGenerateColumns="False" ShowHeaderWhenEmpty="True" BackColor="White" BorderColor="#CCCCCC" Style="margin-bottom: 0px;" Width="95%" BorderStyle="None" CellPadding="10" BorderWidth="1px" GridLines="None" CssClass="auto-style5">
+        <form id="display" runat="server" class="auto-style6">
+                    <table>
+                        <tr>
+                            <td class="auto-style2">
+                                <asp:Button ID="button1" runat="server" OnClick="updateButton_Click" Text="Update" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="auto-style25">
+                                <asp:Button ID="button2" runat="server" OnClick="createCsv" Text="Create CSV" AutoPostBack="true" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="auto-style25">
+                                <div id="invoiceNumberLabel">Invoice Number:</div>
+                            </td>
+                            <td class="auto-style7">
+                                <asp:TextBox ID="invoiceNumber" runat="server" CssClass="auto-style18" Height="22px" Width="160px"></asp:TextBox>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="auto-style16">
+                                <div id="transactionDateLabel" class="auto-style14">Transaction Date:</div>
+                            </td>
+                            <td class="auto-style17">
+                                <asp:TextBox ID="transactionDate" runat="server" CssClass="auto-style18" Height="22px" Width="160px"></asp:TextBox>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="auto-style21">
+                                <div id="dueDateLabel">Due Date:</div>
+                            </td>
+                            <td class="auto-style22">
+                                <asp:TextBox ID="dueDate" runat="server" CssClass="auto-style18" Height="22px" Width="160px"></asp:TextBox>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="auto-style23">A/P AccountNumber:</td>
+                            <td class="auto-style24">
+                                <asp:TextBox ID="apAccountNumber" runat="server" CssClass="auto-style12" Height="22px" Width="160px"></asp:TextBox>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="auto-style4">
+                                <asp:Label ID="doneMessage3" runat="server"></asp:Label>
+                            </td>   
+                        </tr>
+                    </table>
+            <div class="col-md-12">
+                <div>
+                    <asp:GridView ID="infoGridView" runat="server" AutoGenerateColumns="False" OnRowDataBound="ddlClientNameTbx" ShowHeaderWhenEmpty="true" Width="1802px" CssClass="auto-style3">
                         <AlternatingRowStyle BackColor="#CCD9FF" />
                         <Columns>
-
-                            <asp:BoundField DataField="UserId" HeaderText="User Id" ReadOnly="True"><%--Employee Name--%>
+                            <asp:BoundField DataField="EmployeeName" HeaderText="Employee Name" ReadOnly="True"><%--Employee Name--%>
                                 <ControlStyle Font-Names="Arial" Font-Bold />
-                                <HeaderStyle Font-Names="Arial Black" Wrap="False" CssClass="color: orange;" HorizontalAlign="Left" />
-                                <ItemStyle Wrap="False" Font-Names="Arial" Font-Bold Font-Size="10px" />
+                                <HeaderStyle Font-Names="Arial Black" Wrap="False" CssClass="margin-left: 0;" HorizontalAlign="Left" />
+                                <ItemStyle Wrap="False" Font-Names="Arial" Font-Bold Font-Size="11px" />
                             </asp:BoundField>
-                            <asp:BoundField DataField="CloseDate" HeaderText="Close Date" ReadOnly="True" DataFormatString="{0:MM/dd/yyyy}"><%--Close Date--%>
+                            <asp:BoundField DataField="CloseDate" HeaderText="Close Date" ReadOnly="True"><%--Close Date--%>
                                 <ControlStyle Font-Names="Arial" Font-Bold />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
-                                <ItemStyle Wrap="False" Font-Names="Arial" Font-Bold Font-Size="10px" />
+                                <ItemStyle Wrap="False" Font-Names="Arial" Font-Bold Font-Size="11px" />
                             </asp:BoundField>
-                            <asp:BoundField DataField="ChargeDate" HeaderText="Charge Date" ReadOnly="True" DataFormatString="{0:MM/dd/yyyy}"><%--Charge Date--%>
+                            <asp:BoundField DataField="ChargeDate" HeaderText="Charge Date" ReadOnly="True"><%--Charge Date--%>
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
-                                <ItemStyle Font-Names="Arial" Font-Bold Wrap="False" Font-Size="10px" />
+                                <ItemStyle Font-Names="Arial" Font-Bold Wrap="False" Font-Size="11px" />
                             </asp:BoundField>
                             <asp:BoundField DataField="Description" HeaderText="Description"><%--Description--%>
-                                <ControlStyle Width="300px" />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
-                                <ItemStyle Font-Names="Arial" Font-Bold Width="200px" Wrap="False" Font-Size="10px" />
+                                <ItemStyle Font-Names="Arial" Font-Bold Width="200px" Wrap="False" Font-Size="11px" />
                             </asp:BoundField>
                             <asp:TemplateField HeaderText="Description 2">
                                 <ItemTemplate>
                                     <asp:HiddenField ID="HiddenId" runat="server" Value='<%# Bind("Id") %>' />
                                     <asp:TextBox runat="server" ID="description2Text" AutoPostBack="true" Text='<%# Bind("Description2") %>' />
-                                    <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ControlToValidate="description2Text" ErrorMessage="*" ForeColor="Red" Font-Size="XX-Large"></asp:RequiredFieldValidator>--%>
+                                    <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="description2Text" ErrorMessage="*" ForeColor="Red" Font-Size="XX-Large"></asp:RequiredFieldValidator>--%>
                                 </ItemTemplate>
-                                <ControlStyle Font-Bold="True" Font-Names="Arial" Width="300px" />
+                                <ControlStyle Font-Bold="True" Font-Names="Arial" Font-Size="11px" Width="300px" />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
-                                <ItemStyle Font-Bold="True" Font-Names="Arial" Wrap="False" Font-Size="10px" />
+                                <ItemStyle Font-Bold="True" Font-Names="Arial" Wrap="False" />
                             </asp:TemplateField>
 
                             <asp:TemplateField HeaderText="Client Name"><%--ClientName--%>
                                 <ItemTemplate>
-                                    <asp:HiddenField Id="ddlClientNameTextHidden" Value='<%# Bind("ClientId") %>' runat="server"></asp:HiddenField>
-                                    <asp:DropDownList ID="ddlClientNameText" runat="server" AutoPostBack="true"  AppendDataBoundItems="true"></asp:DropDownList>
+                                    <asp:HiddenField ID="ddlClientNameTextHidden" Value='<%# Bind("ClientId") %>' runat="server"></asp:HiddenField>
+                                    <asp:DropDownList ID="ddlClientNameText" runat="server" AutoPostBack="true" AppendDataBoundItems="true"></asp:DropDownList>
                                     <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="ddlClientNameText" ErrorMessage="*" ForeColor="Red" InitialValue="Please select" Font-Size="XX-Large"></asp:RequiredFieldValidator>--%>
                                 </ItemTemplate>
-                                <ControlStyle Font-Bold="True" Font-Names="Arial" />
+                                <ControlStyle Font-Bold="True" Font-Names="Arial" Font-Size="11px" Width="280px" />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
                                 <ItemStyle Font-Names="Arial" Font-Bold Wrap="False" />
                             </asp:TemplateField>
 
-                            <asp:CheckBoxField>
-
-                                <HeaderStyle HorizontalAlign="Left" />
-                            </asp:CheckBoxField>
-
-                             <asp:TemplateField HeaderText="Category Description"><%--Category Description--%>
+                            <asp:TemplateField HeaderText="Category Description"><%--Category Description--%>
                                 <ItemTemplate>
-                                    <asp:HiddenField Id="ddlCategoryDescriptionHidden" Value='<%# Bind("CategoryId") %>' runat="server"></asp:HiddenField>
-                                    <asp:DropDownList ID="ddlCategoryDescriptionText" runat="server"  AutoPostBack="true"  AppendDataBoundItems="true"></asp:DropDownList>
+                                    <asp:HiddenField ID="ddlCategoryDescriptionHidden" Value='<%# Bind("CategoryId") %>' runat="server"></asp:HiddenField>
+                                    <asp:DropDownList ID="ddlCategoryDescriptionText" runat="server" AutoPostBack="true" AppendDataBoundItems="true"></asp:DropDownList>
                                 </ItemTemplate>
-                                <ControlStyle Font-Bold="True" Font-Names="Arial" />
+                                <ControlStyle Font-Bold="True" Font-Names="Arial" Font-Size="11px" Width="280px" />
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Left" />
                                 <ItemStyle Font-Names="Arial" Font-Bold Wrap="False" />
                             </asp:TemplateField>
-
-                            <asp:CheckBoxField>
-
-                                <HeaderStyle HorizontalAlign="Left" />
-                            </asp:CheckBoxField>
                             <asp:BoundField DataField="Amount" HeaderText="Amount" ReadOnly="True" HtmlEncode="false" DataFormatString="$ {0:###,###,###.00}"><%--Amount--%>
                                 <HeaderStyle Font-Names="Arial Black" Wrap="False" HorizontalAlign="Right" />
-                                <ItemStyle Font-Names="Arial" Font-Bold HorizontalAlign="Right" Wrap="False" Font-Size="10px" />
+                                <ItemStyle Font-Names="Arial" Font-Bold HorizontalAlign="Right" Wrap="False" Font-Size="11px" />
                             </asp:BoundField>
 
-                            <asp:CheckBoxField />
                         </Columns>
-                         <EmptyDataTemplate>No Record Available</EmptyDataTemplate>
+                        <EmptyDataTemplate>No Record Available</EmptyDataTemplate>
                         <FooterStyle BackColor="White" ForeColor="#000066" />
                         <HeaderStyle BackColor="#668CFF" Font-Bold="False" ForeColor="Black" Font-Names="Arial Black" Height="60px" />
                         <PagerStyle BackColor="White" ForeColor="#000066" HorizontalAlign="Left" />
@@ -183,15 +139,9 @@
                         <SortedDescendingCellStyle BackColor="#CAC9C9" />
                         <SortedDescendingHeaderStyle BackColor="#00547E" />
                     </asp:GridView>
-                    <asp:HiddenField ID="saveHiddenCsv" runat="server"></asp:HiddenField>
-                    <asp:HiddenField ID="HiddenField1" runat="server"></asp:HiddenField>
-                    <asp:HiddenField ID="invoiceNumberHidden" runat="server"></asp:HiddenField>
-                    <asp:HiddenField ID="transactionDateHidden" runat="server"></asp:HiddenField>
-                    <asp:HiddenField ID="dueDateHidden" runat="server"></asp:HiddenField>
-                    <asp:HiddenField ID="apAccountNumberHidden" runat="server"></asp:HiddenField>
-                </form>
-            </div>
-        </div>
+        </form>
+    </div>
+    </div>
     </div>
 </body>
 </html>

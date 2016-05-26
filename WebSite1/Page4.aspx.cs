@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 public partial class Page4 : Page
 {
-    public string pcName = "'clairet'";
+    public string pcName = "'rogerb'";
 
     string sqlConnString = @"Data Source=Dev-Intranet;Initial Catalog=DevData;User ID=IntranetUser;Password=IntranetUser";
 
@@ -44,19 +44,32 @@ public partial class Page4 : Page
 FROM [Expense].[Clients] e 
 WHERE t.ClientId = e.ClientId ) AS ClientName 
 FROM [DevData].[Expense].[Transactions] t
-WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
+WHERE [UserId] = " + pcName + "AND  [Status] = 1 OR [Status] = 2";
             connection.Open();
             SqlCommand myCommand = new SqlCommand();
             myCommand.Connection = connection;
             myCommand.CommandText = sqlQuery;
             myCommand.CommandType = CommandType.Text;
             myCommand.CommandTimeout = 60;
-            infoGridView5.DataSource = myCommand.ExecuteReader();
-            infoGridView5.DataBind();
-            connection.Close();
+            infoGridView.DataSource = myCommand.ExecuteReader();
+            infoGridView.DataBind();
+            connection.Close(); string sqlQuery2 = @"SELECT   
+
+[EmployeeName]   
+FROM [DevData].[Expense].[Transactions] 
+WHERE  [UserId] =  " + pcName + "";
+            connection.Open();
+            SqlCommand myCommand2 = new SqlCommand();
+            myCommand2.Connection = connection;
+            myCommand2.CommandText = sqlQuery2;
+            myCommand2.CommandType = CommandType.Text;
+            myCommand2.CommandTimeout = 60;
+            myCommand2.ExecuteScalar().ToString();
+
+            transactionUserName.Text = myCommand2.ExecuteScalar().ToString();
+
         }
     }
-   
     public void ddlClientNameTbx(object sender, GridViewRowEventArgs e)
     {
 
@@ -127,10 +140,10 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
         {
             string query = "";
 
-            for (int i = 0; i < infoGridView5.Rows.Count; i++)
+            for (int i = 0; i < infoGridView.Rows.Count; i++)
             {
 
-                GridViewRow row = infoGridView5.Rows[i];
+                GridViewRow row = infoGridView.Rows[i];
 
 
 
@@ -199,10 +212,10 @@ WHERE [Status] = 1 AND  [UserId] =  " + pcName + "";
         {
             string query = "";
 
-            for (int i = 0; i < infoGridView5.Rows.Count; i++)
+            for (int i = 0; i < infoGridView.Rows.Count; i++)
             {
 
-                GridViewRow row = infoGridView5.Rows[i];
+                GridViewRow row = infoGridView.Rows[i];
 
                 DropDownList clientId = ((DropDownList)(row.Cells[6].FindControl("ddlClientNameText")));
                 string clientIdDdl = clientId.SelectedValue.ToString();
